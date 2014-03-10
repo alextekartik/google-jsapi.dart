@@ -103,4 +103,8 @@ void main() {
   autoLoadCheckbox.onChange.listen((_) {
     storageSet(GAPI_AUTOLOAD, autoLoadCheckbox.checked.toString());
   });
+
+  if (autoload) {
+    _loadGapi();
+  }
 }

@@ -14,25 +14,26 @@ Gapi _gapi;
 
 Future<Gapi> loadGapi() {
   Future _checkGapiLoad() {
-    print('trying');
-    //print(context['gapi']['client']);
-    JsObject jsGapi = context['gapi'];
-    
-    // test client to validate when loaded
-    if ((jsGapi['client'] != null) && (jsGapi['auth'] != null)) {
-      _googleJsClientLoaded = true;
-      _gapi = new Gapi(jsGapi);
-      return new Future.value(_gapi);
-    } else {
-      return new Future.delayed(new Duration(milliseconds: 1))
-      .then((_) {
-        return _checkGapiLoad();
-      });
+    // print('trying');
+    if (context.hasProperty('gapi')) {
+      JsObject jsGapi = context['gapi'];
+      // We wait for client and auth to be loaded
+      // not sure that is sufficient however they are sometimes no set on load
+      if (jsGapi.hasProperty('client') && jsGapi.hasProperty('auth')) {
+        print('got it');
+        _googleJsClientLoaded = true;
+        _gapi = new Gapi(jsGapi);
+        return new Future.value(_gapi);
+      }
     }
+    return new Future.delayed(new Duration(milliseconds: 1)).then((_) {
+      return _checkGapiLoad();
+    });
+
   }
   if (_gapi == null) {
-    return loadJavascriptScript('https://apis.google.com/js/client.js')
-    .then((_) {
+    return loadJavascriptScript('https://apis.google.com/js/client.js').then((_)
+        {
       return _checkGapiLoad();
     });
   }
