@@ -3,5 +3,7 @@ description: js api loader
 dependencies:
   browser: any
   bootstrap_for_pub: any
+dev_dependencies:
+  unittest: any
 
 

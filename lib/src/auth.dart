@@ -5,6 +5,7 @@ class GapiAuth {
   JsObject jsObject;
   GapiAuth(this.jsObject);
   
+  static const SCOPE_EMAIL = 'email';
   static const APPROVAL_PROMPT_FORCE = 'force';
   
   String getAccessToken() {
