@@ -4,39 +4,6 @@ import 'dart:js';
 import 'dart:async';
 import 'dart:html';
 
-Future debugLoadJavascriptScript(String src) {
-  Completer completer = new Completer();
-  var script = new ScriptElement();
-  script.type = 'text/javascript';
-  script.onError.listen((e) {
-    // This is actually the only callback called upon success
-    // onError, onDone are never called
-    completer.completeError(new Exception('script $src not loaded'));
-  }, onError: (e, st) {
-    // never called
-    print('onErrorError');
-    completer.completeError(e, st);
-  }, onDone: () {
-    // never called
-    print('onErrorDone');
-  });
-  script.onLoad.listen((_) {
-    // This is actually the only callback called upon success
-    // onError, onDone are never called
-    completer.complete();
-  }, onError: (e, st) {
-    // never called
-    print('onError');
-    completer.completeError(e, st);
-  }, onDone: () {
-    // never called
-    print('onDone');
-  });
-  script.src = src;
-  document.body.children.add(script);
-  return completer.future;
-}
-
 Future loadJavascriptScript(String src) {
   Completer completer = new Completer();
   var script = new ScriptElement();

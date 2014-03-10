@@ -14,7 +14,7 @@ void storageSet(String key, String value) {
   if (value == null) {
     storage.remove(key);
   } else {
-  storage['$_STORAGE_KEY_PREF.$key'] = value;
+    storage['$_STORAGE_KEY_PREF.$key'] = value;
   }
 }
 
@@ -71,12 +71,16 @@ void authMain() {
 Element loadGapiResult;
 
 void _loadGapi() {
+  loadGapiResult.innerHtml = 'loading...';
   loadGapi().then((Gapi gapi_) {
     gapi = gapi_;
     loadGapiResult.innerHtml = 'Gapi loaded';
     authMain();
+  }, onError: (e, st) {
+    loadGapiResult.innerHtml = 'load failed $e';
   });
 }
+
 void main() {
   Element loadGapiForm = querySelector('form.app-gapi');
   Element loadGapiButton = loadGapiForm.querySelector('button.app-load');
