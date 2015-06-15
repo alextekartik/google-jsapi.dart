@@ -1,8 +1,9 @@
+@TestOn("browser")
 library gapi_test;
 
 import 'dart:async';
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 import 'package:tekartik_google_jsapi/google_jsapi.dart';
 
@@ -50,10 +51,12 @@ void gapiMain() {
     test('load picker', () {
       return gapi.load('picker');
     });
-    
+
+    /*
     skip_test('load picker 1', () {
       return gapi.client.load('picker', '1');
     });
+    */
     
     
   });

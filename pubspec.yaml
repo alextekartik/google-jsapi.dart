@@ -1,8 +1,9 @@
 name: tekartik_google_jsapi
 description: js api loader
 dependencies:
-  bootstrap_for_pub: any
+  browser: any
 dev_dependencies:
-  unittest: any
+  bootstrap: any
+  test: any
 
 

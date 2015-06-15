@@ -1,4 +1,4 @@
-library google_jsapi;
+library tekartik_google_jsapi;
 
 import 'dart:async';
 import 'dart:js';

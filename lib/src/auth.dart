@@ -1,4 +1,4 @@
-part of google_jsapi;
+part of tekartik_google_jsapi;
 
 
 class GapiAuth {
