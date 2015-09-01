@@ -1,7 +1,10 @@
 name: tekartik_google_jsapi
+version: 0.0.2
 description: js api loader
 dependencies:
   browser: any
+  tekartik_utils:
+    git: git://github.com/alextekartik/tekartik_utils.dart
 dev_dependencies:
   bootstrap: any
   test: any

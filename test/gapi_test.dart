@@ -1,4 +1,5 @@
-@TestOn("browser")
+@TestOn("browser && !content-shell")
+// somehow it does not work in content-shell
 library gapi_test;
 
 import 'dart:async';

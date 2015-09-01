@@ -3,7 +3,7 @@ library tekartik_google_jsapi;
 import 'dart:async';
 import 'dart:js';
 
-import 'js_utils.dart';
+import 'package:tekartik_utils/js_utils.dart';
 
 part 'src/auth.dart';
 part 'src/client.dart';
@@ -32,7 +32,7 @@ Future<Gapi> loadGapi() {
 
   }
   if (_gapi == null) {
-    return loadJavascriptScript('https://apis.google.com/js/client.js').then((_)
+    return loadJavascriptScript('//apis.google.com/js/client.js').then((_)
         {
       return _checkGapiLoad();
     });
