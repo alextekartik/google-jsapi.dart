@@ -1,5 +1,5 @@
 name: tekartik_google_jsapi
-version: 0.0.2
+version: 0.1.0
 description: js api loader
 dependencies:
   browser: any

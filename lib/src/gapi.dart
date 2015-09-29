@@ -2,31 +2,35 @@ part of tekartik_google_jsapi;
 
 bool _googleJsClientLoaded;
 
-
 class Gapi {
   JsObject jsObject;
   Gapi(this.jsObject);
-  
-  JsObject get jsGapi => jsObject; 
-  
+
+  JsObject get jsGapi => jsObject;
+
   GapiAuth _auth;
   GapiClient _client;
-  
+
+  // use load auth
+  @deprecated
   GapiAuth get auth {
     if (_auth == null) {
       _auth = new GapiAuth(jsObject['auth']);
     }
     return _auth;
   }
-  
+
+  operator [](String key) => jsObject[key];
+
+  // use load client
   GapiClient get client {
     if (_client == null) {
       _client = new GapiClient(jsObject['client']);
     }
     return _client;
   }
-  
-  
+
+
   Future load(String api) {
     Completer completer = new Completer();
     void _onLoaded([jsData]) {
@@ -35,10 +39,10 @@ class Gapi {
     var jsOptions = new JsObject.jsify({'callback': _onLoaded});
     List args = [ api, jsOptions ];
     jsObject.callMethod('load', args);
-    
+
     return completer.future;
   }
-  
+
 }
 
 

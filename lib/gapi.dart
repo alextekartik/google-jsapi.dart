@@ -1,16 +1,64 @@
-@deprecated
-library tekartik_google_jsapi;
+library tekartik_google_jsapi.gapi;
 
 import 'dart:async';
 import 'dart:js';
 
 import 'package:tekartik_utils/js_utils.dart';
 
-part 'src/auth.dart';
-part 'src/client.dart';
-part 'src/gapi.dart';
+class Gapi {
+  JsObject jsObject;
+  Gapi(this.jsObject);
 
-Gapi _gapi;
+  JsObject get jsGapi => jsObject;
+
+  operator [](String key) => jsObject[key];
+
+  Future load(String api) {
+    Completer completer = new Completer();
+    void _onLoaded([jsData]) {
+      completer.complete();
+    }
+    var jsOptions = new JsObject.jsify({'callback': _onLoaded});
+    List args = [ api, jsOptions ];
+    jsObject.callMethod('load', args);
+
+    return completer.future;
+  }
+
+}
+
+
+
+class GapiException implements Exception {
+  /**
+   * A message describing the format error.
+   */
+  final String message;
+
+  /**
+   * Creates a new FormatException with an optional error [message].
+   */
+  const GapiException([this.message = ""]);
+  String toString() => "GapiException: $message";
+}
+
+Exception gapiResponseParseException(JsObject jsData) {
+  if (jsData != null) {
+    var jsError = jsData['error'];
+    if (jsError != null) {
+      if ((jsError is JsObject) && (!(jsError is JsArray))) {
+        int code = jsError['code'];
+        String message = jsError['message'];
+        return new GapiException("$code - $message");
+      } else {
+        return new GapiException('error');
+      }
+    }
+  }
+  return null;
+}
+
+//Gapi _gapi;
 
 bool _debug = false;
 bool _checkGapiProperties([List<String> properties = const []]) {

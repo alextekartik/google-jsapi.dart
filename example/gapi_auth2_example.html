@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google jsapi example</title>
+    <title>GapiAuth2 example</title>
 
     <!-- include the stylesheets -->
     <link rel="stylesheet" href="packages/bootstrap/css/bootstrap.css">
@@ -12,24 +12,12 @@
 
 <body>
 <div class="container">
-    <h1 id="text">Google jsapi example</h1>
+    <h1 id="text">GapiAuth2 example</h1>
 
-    <form class="app-gapi" role="form">
-        <h2>Gapi</h2>
-
-        <div class="form-group">
-            <div class="checkbox">
-                <label> <input type="checkbox" class="app-autoload">Autoload
-                    on start
-                </label>
-            </div>
-
-            <button class="btn btn-primary app-load">Load</button>
-        </div>
-        <div class="bg-info form-group">
-            <pre class="app-result"></pre>
-        </div>
-    </form>
+    <div class="app-gapi">
+        <h2>GapiAuth2</h2>
+        <pre class="app-result">GapiAuth2 not loaded</pre>
+    </div>
     <form role="form" class="app-auth hidden">
         <h2>Auth</h2>
 
@@ -55,21 +43,33 @@
             </label>
         </div>
         <div class="checkbox">
-            <label> <input type="checkbox" class="app-autosignin">Auto signin
+            <label> <input type="checkbox" class="app-autosignin">Auto init
                 on start
             </label>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-primary app-authorize">Authorize</button>
+            <button class="btn btn-primary app-authorize">Initialize</button>
         </div>
         <div class="bg-info form-group">
-            <pre class="app-result"></pre>
+            <pre class="app-result">Not initialized</pre>
+        </div>
+
+        <div role="form" class="app-sign hidden">
+            <div class="form-group">
+                <button class="btn btn-primary app-signin">Sign in</button>
+                <button class="btn btn-primary app-signin-select">Sign in - select</button>
+                <button class="btn btn-primary app-signout">Sign out</button>
+                <button class="btn btn-primary app-disconnect">Disconnect</button>
+            </div>
+            <div class="bg-info form-group">
+                <pre class="app-sign-result">No info</pre>
+            </div>
         </div>
     </form>
 </div>
 
-<script type="application/dart" src="google_jsapi_example.dart"></script>
+<script type="application/dart" src="gapi_auth2_example.dart"></script>
 <!-- for this next line to work, your pubspec.yaml file must have a dependency on 'browser' -->
 <script src="packages/browser/dart.js"></script>
 

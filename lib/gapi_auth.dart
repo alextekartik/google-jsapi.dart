@@ -1,9 +1,13 @@
-part of tekartik_google_jsapi;
+library tekartik_google_jsapi.gapi_auth;
 
+import 'dart:js';
+import 'dart:async';
+import 'gapi.dart';
+import 'promise.dart';
 
 class GapiAuth {
   JsObject jsObject;
-  GapiAuth(this.jsObject);
+  GapiAuth._(this.jsObject);
 
   static const SCOPE_EMAIL = 'email';
   static const APPROVAL_PROMPT_FORCE = 'force';
@@ -24,10 +28,10 @@ class GapiAuth {
       throw new ArgumentError("missing CLIENT_ID");
     }
     var options = {
-                   'client_id': clientId,
-                   'scope': scopes,
-                   'immediate': false,
-                   'approval_prompt': approvalPrompt
+      'client_id': clientId,
+      'scope': scopes,
+      'immediate': false,
+      'approval_prompt': approvalPrompt
     };
     var jsOptions = new JsObject.jsify(options);
     void _onResult(authResult) {
@@ -50,3 +54,17 @@ class GapiAuth {
     return completer.future;
   }
 }
+
+Future<GapiAuth> loadGapiAuth([Gapi gapi]) async {
+  if (gapi == null) {
+    gapi = await loadGapiPlatform();
+  }
+  // need loaded?
+  if (gapi['auth'] == null) {
+    await gapi.load('auth');
+  }
+  return new GapiAuth._(gapi['auth']);
+
+}
+
+

@@ -3,7 +3,7 @@ library auth_test;
 
 import 'package:test/test.dart';
 
-import 'package:tekartik_google_jsapi/google_jsapi.dart';
+import 'package:tekartik_google_jsapi/gapi_auth.dart';
 import 'test_config.dart';
 
 void main() {
@@ -15,19 +15,17 @@ void main() {
 
 void authMain() {
   group('gapi', () {
-    Gapi gapi;
-    setUp(() {
-      return loadGapi().then((Gapi _gapi) {
-        gapi = _gapi;
-      });
+    GapiAuth gapiAuth;
+    setUp(() async {
+      gapiAuth = await loadGapiAuth();
     });
     
     test('auth', () {
-      expect(gapi.auth, isNotNull);
+      expect(gapiAuth, isNotNull);
     });
     
     test('authorize auth', () {
-      return gapi.auth.authorize(CLIENT_ID, [GapiAuth.SCOPE_EMAIL]);
+      return gapiAuth.authorize(CLIENT_ID, [GapiAuth.SCOPE_EMAIL]);
     });
 
     /*

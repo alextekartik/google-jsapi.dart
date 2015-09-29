@@ -1,27 +1,31 @@
 library google_jsapi_example;
 
 import 'dart:html';
-import 'package:tekartik_google_jsapi/google_jsapi.dart';
+import 'package:tekartik_google_jsapi/gapi.dart';
+import 'package:tekartik_google_jsapi/gapi_auth.dart';
 
 Gapi gapi;
+GapiAuth gapiAuth;
 Storage storage = window.localStorage;
 
-String _STORAGE_KEY_PREF = 'com.tekartik.google_jsapi_example';
+String storageKeyPref = 'com.tekartik.google_jsapi_example';
 dynamic storageGet(String key) {
-  return storage['$_STORAGE_KEY_PREF.$key'];
+  return storage['$storageKeyPref.$key'];
 }
+
 void storageSet(String key, String value) {
   if (value == null) {
-    storage.remove(key);
+    storage.remove('$storageKeyPref.$key');
   } else {
-    storage['$_STORAGE_KEY_PREF.$key'] = value;
+    storage['$storageKeyPref.$key'] = value;
   }
 }
 
-String GAPI_AUTOLOAD = 'gapi_autoload'; // boolean
-String AUTH_APPROVIAL_PROMPT = 'auth_approval_prompt'; // boolean
-String CLIEND_ID_KEY = 'client_id';
-String SCOPES_KEY = 'scopes';
+String gapiAutoLoadKey = 'gapi_autoload'; // boolean
+String gapiAutoSignInKey = 'gapi_autosignin'; // boolean
+String authApprovalPromptKey = 'auth_approval_prompt'; // boolean
+String clientIdKey = 'client_id';
+String scopesKey = 'scopes';
 
 void authMain() {
   Element authForm = querySelector('form.app-auth');
@@ -30,70 +34,86 @@ void authMain() {
   InputElement clientIdInput = authForm.querySelector('input#appInputClientId');
   InputElement scopesInput = authForm.querySelector('input#appInputScopes');
   Element authorizeResult = authForm.querySelector('.app-result');
-  CheckboxInputElement approvalPromptCheckbox = authForm.querySelector(
-      '.app-approval-prompt');
+  CheckboxInputElement autoSignInCheckbox =
+  authForm.querySelector('.app-autosignin');
+  CheckboxInputElement approvalPromptCheckbox =
+      authForm.querySelector('.app-approval-prompt');
 
-  clientIdInput.value = storageGet(CLIEND_ID_KEY);
-  scopesInput.value = storageGet(SCOPES_KEY);
+  clientIdInput.value = storageGet(clientIdKey);
+  scopesInput.value = storageGet(scopesKey);
 
-  String approvalPrompt = storageGet(AUTH_APPROVIAL_PROMPT);
+  String approvalPrompt = storageGet(authApprovalPromptKey);
 
-  approvalPromptCheckbox.checked = (approvalPrompt ==
-      GapiAuth.APPROVAL_PROMPT_FORCE);
+  approvalPromptCheckbox.checked =
+      (approvalPrompt == GapiAuth.APPROVAL_PROMPT_FORCE);
 
-  authorizeButton.onClick.listen((Event event) {
-    event.preventDefault();
+  bool autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
+  autoSignInCheckbox.checked =autoSignIn;
+
+  _signIn() {
     String clientId = clientIdInput.value;
     if (clientId.length < 1) {
       authorizeResult.innerHtml = 'Missing CLIENT ID';
       return;
     }
-    storageSet(CLIEND_ID_KEY, clientId);
+    storageSet(clientIdKey, clientId);
 
     String scopesString = scopesInput.value;
-    storageSet(SCOPES_KEY, scopesString);
+    storageSet(scopesKey, scopesString);
     List<String> scopes = scopesString.split(',');
 
-    gapi.auth.authorize(clientId, scopes, approvalPrompt: approvalPrompt).then(
-        (String oauthToken) {
-      authorizeResult.innerHtml =
-          "client id '$clientId' authorized for '$scopes'";
+    gapiAuth
+    .authorize(clientId, scopes, approvalPrompt: approvalPrompt)
+    .then((String oauthToken) {
+      authorizeResult.text =
+      "client id '$clientId' authorized for '$scopes'";
+
     });
+  }
+  authorizeButton.onClick.listen((Event event) {
+    event.preventDefault();
+    _signIn();
   });
 
   approvalPromptCheckbox.onChange.listen((_) {
-    approvalPrompt = approvalPromptCheckbox.checked ?
-        GapiAuth.APPROVAL_PROMPT_FORCE : null;
-    storageSet(AUTH_APPROVIAL_PROMPT, approvalPrompt);
+    approvalPrompt =
+        approvalPromptCheckbox.checked ? GapiAuth.APPROVAL_PROMPT_FORCE : null;
+    storageSet(authApprovalPromptKey, approvalPrompt);
   });
+
+  autoSignInCheckbox.onChange.listen((_) {
+    storageSet(gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
+  });
+
+  if (autoSignIn) {
+    _signIn();
+  }
 }
 
 Element loadGapiResult;
 
-void _loadGapi() {
+_loadGapi() async {
   loadGapiResult.innerHtml = 'loading...';
-  loadGapi().then((Gapi gapi_) {
-    gapi = gapi_;
+  Gapi gapi = await loadGapi().then((_) {
     loadGapiResult.innerHtml = 'Gapi loaded';
-    authMain();
   }, onError: (e, st) {
     loadGapiResult.innerHtml = 'load failed $e';
+    throw e;
   });
+  gapiAuth = await loadGapiAuth(gapi);
+  authMain();
 }
 
 void main() {
   Element loadGapiForm = querySelector('form.app-gapi');
   Element loadGapiButton = loadGapiForm.querySelector('button.app-load');
   loadGapiResult = loadGapiForm.querySelector('.app-result');
-  CheckboxInputElement autoLoadCheckbox = loadGapiForm.querySelector(
-      '.app-autoload');
+  CheckboxInputElement autoLoadCheckbox =
+      loadGapiForm.querySelector('.app-autoload');
 
-  bool autoload = storageGet(GAPI_AUTOLOAD) == true.toString();
+  bool autoload = storageGet(gapiAutoLoadKey) == true.toString();
 
   autoLoadCheckbox.checked = autoload;
-  if (autoload) {
-    _loadGapi();
-  }
 
   loadGapiButton.onClick.listen((Event event) {
     event.preventDefault();
@@ -101,7 +121,7 @@ void main() {
   });
 
   autoLoadCheckbox.onChange.listen((_) {
-    storageSet(GAPI_AUTOLOAD, autoLoadCheckbox.checked.toString());
+    storageSet(gapiAutoLoadKey, autoLoadCheckbox.checked.toString());
   });
 
   if (autoload) {
