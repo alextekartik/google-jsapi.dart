@@ -3,7 +3,6 @@ library tekartik_google_jsapi.gapi_auth;
 import 'dart:js';
 import 'dart:async';
 import 'gapi.dart';
-import 'promise.dart';
 
 class GapiAuth {
   JsObject jsObject;

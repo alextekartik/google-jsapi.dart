@@ -4,7 +4,6 @@ library auth_test;
 import 'package:test/test.dart';
 
 import 'package:tekartik_google_jsapi/gapi_client.dart';
-import 'package:tekartik_google_jsapi/gapi.dart';
 import 'dart:js';
 
 void main() {

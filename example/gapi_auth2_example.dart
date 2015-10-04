@@ -69,6 +69,7 @@ class App {
       _insertLine("Signed out");
       _showAuthInfo();
     });
+
     signInForm
         .querySelector('button.app-disconnect')
         .onClick
@@ -76,6 +77,20 @@ class App {
       event.preventDefault();
       gapiAuth2.getAuthInstance().disconnect();
       _insertLine("Disconnected");
+      _showAuthInfo();
+    });
+
+    signInForm
+    .querySelector('button.app-user-disconnect')
+    .onClick
+    .listen((Event event) async {
+      event.preventDefault();
+      GoogleUser user = gapiAuth2.getAuthInstance().getCurrentUser();
+      if (user != null) {
+        user.disconnect();
+      }
+      await gapiAuth2.getAuthInstance().signOut();
+      _insertLine("User disconnected");
       _showAuthInfo();
     });
   }
