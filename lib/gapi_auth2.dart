@@ -61,8 +61,18 @@ class GoogleAuth {
     }
     return null;
   }
+
   bool getIsSignedIn() {
     return (_jsObject['isSignedIn'] as JsObject).callMethod('get');
+  }
+
+  Stream<bool> get onSignedIn {
+    StreamController ctlr = new StreamController();
+    signInChange(bool val) {
+      ctlr.add(bool);
+    }
+    (_jsObject['isSignedIn'] as JsObject).callMethod('listen', [signInChange]);
+    return ctlr.stream;
   }
 
   Future signOut() async {
@@ -70,7 +80,7 @@ class GoogleAuth {
   }
 
   Future signIn([GapiAuth2SignInParams params]) async {
-    var _params = params == null ? null: params.jsify();
+    var _params = params == null ? null : params.jsify();
     await new Promise(_jsObject.callMethod('signIn', [_params])).asFuture;
   }
 
@@ -82,13 +92,28 @@ class GoogleAuth {
 class GapiAuth2InitParams {
   String clientId;
   List<String> scopes;
+  // exp
+  //String userId;
 
   JsObject jsify() {
+    return new JsObject.jsify(toJson());
+  }
+
+  Map toJson() {
     Map map = {};
     map['client_id'] = clientId;
     map['scope'] = scopes.join(' ');
-    return new JsObject.jsify(map);
+    /*
+    if (userId != null && userId.length > 0) {
+      map['authuser'] = -1;
+      map['user_id'] = userId;
+    }
+    */
+    return map;
   }
+
+  @override
+  toString() => "${toJson()}";
 }
 
 class GapiAuth2 {
@@ -101,10 +126,12 @@ class GapiAuth2 {
   GoogleAuth init(GapiAuth2InitParams params) {
     return new GoogleAuth._(_jsObject.callMethod('init', [params.jsify()]));
   }
+
   GoogleAuth getAuthInstance() {
     return new GoogleAuth._(_jsObject.callMethod('getAuthInstance'));
   }
 }
+
 Future<GapiAuth2> loadGapiAuth2([Gapi gapi]) async {
   if (gapi == null) {
     gapi = await loadGapiPlatform();
@@ -114,7 +141,4 @@ Future<GapiAuth2> loadGapiAuth2([Gapi gapi]) async {
     await gapi.load('auth2');
   }
   return new GapiAuth2._(gapi['auth2']);
-
 }
-
-

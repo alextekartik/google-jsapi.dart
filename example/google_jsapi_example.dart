@@ -23,6 +23,7 @@ void storageSet(String key, String value) {
 
 String gapiAutoLoadKey = 'gapi_autoload'; // boolean
 String gapiAutoSignInKey = 'gapi_autosignin'; // boolean
+String gapiAutoSignInUserKey = 'gapi_autosignin_user'; // boolean
 String authApprovalPromptKey = 'auth_approval_prompt'; // boolean
 String clientIdKey = 'client_id';
 String scopesKey = 'scopes';
@@ -35,7 +36,7 @@ void authMain() {
   InputElement scopesInput = authForm.querySelector('input#appInputScopes');
   Element authorizeResult = authForm.querySelector('.app-result');
   CheckboxInputElement autoSignInCheckbox =
-  authForm.querySelector('.app-autosignin');
+      authForm.querySelector('.app-autosignin');
   CheckboxInputElement approvalPromptCheckbox =
       authForm.querySelector('.app-approval-prompt');
 
@@ -48,7 +49,7 @@ void authMain() {
       (approvalPrompt == GapiAuth.APPROVAL_PROMPT_FORCE);
 
   bool autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
-  autoSignInCheckbox.checked =autoSignIn;
+  autoSignInCheckbox.checked = autoSignIn;
 
   _signIn() {
     String clientId = clientIdInput.value;
@@ -63,11 +64,9 @@ void authMain() {
     List<String> scopes = scopesString.split(',');
 
     gapiAuth
-    .authorize(clientId, scopes, approvalPrompt: approvalPrompt)
-    .then((String oauthToken) {
-      authorizeResult.text =
-      "client id '$clientId' authorized for '$scopes'";
-
+        .authorize(clientId, scopes, approvalPrompt: approvalPrompt)
+        .then((String oauthToken) {
+      authorizeResult.text = "client id '$clientId' authorized for '$scopes'";
     });
   }
   authorizeButton.onClick.listen((Event event) {
@@ -82,7 +81,8 @@ void authMain() {
   });
 
   autoSignInCheckbox.onChange.listen((_) {
-    storageSet(gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
+    storageSet(
+        gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
   });
 
   if (autoSignIn) {

@@ -21,9 +21,11 @@ void storageSet(String key, String value) {
 }
 
 String gapiAutoLoadKey = 'gapi_autoload'; // boolean
+String gapiAutoInitKey = 'gapi_autoinit'; // boolean
 String gapiAutoSignInKey = 'gapi_autosignin'; // boolean
 String authApprovalPromptKey = 'auth_approval_prompt'; // boolean
 String clientIdKey = 'client_id';
+String userIdKey = 'user_id';
 String scopesKey = 'scopes';
 
 class App {
@@ -31,6 +33,12 @@ class App {
     Element signInForm = querySelector('div.app-sign');
     signInForm.classes.remove('hidden');
     Element signResult = signInForm.querySelector('.app-sign-result');
+
+    CheckboxInputElement autoSignInCheckbox =
+    signInForm.querySelector('.app-autosignin');
+
+    bool autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
+    autoSignInCheckbox.checked = autoSignIn;
 
     _insertLine(String line) {
       StringBuffer sb = new StringBuffer();
@@ -44,6 +52,9 @@ class App {
       _showAuthInfo();
     }
 
+    if (autoSignIn) {
+      _signIn();
+    }
     signInForm.querySelector('button.app-signin').onClick.listen((Event event) {
       event.preventDefault();
       _signIn();
@@ -93,6 +104,12 @@ class App {
       _insertLine("User disconnected");
       _showAuthInfo();
     });
+
+    autoSignInCheckbox.onChange.listen((_) {
+      storageSet(
+          gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
+    });
+
   }
 
   Element authorizeResult;
@@ -117,16 +134,20 @@ class App {
     Element authorizeButton = authForm.querySelector('button.app-authorize');
     InputElement clientIdInput =
         authForm.querySelector('input#appInputClientId');
+    InputElement userIdInput =
+    authForm.querySelector('input#appUserId');
     InputElement scopesInput = authForm.querySelector('input#appInputScopes');
     authorizeResult = authForm.querySelector('.app-result');
-    CheckboxInputElement autoSignInCheckbox =
-        authForm.querySelector('.app-autosignin');
+    CheckboxInputElement autoInitCheckbox =
+        authForm.querySelector('.app-autoinit');
 
     String clientId = storageGet(clientIdKey);
     if (clientId == null) {
       clientId = '124267391961.apps.googleusercontent.com';
     }
+    String userId = storageGet(userIdKey);
     clientIdInput.value = clientId;
+    userIdInput.value = userId;
     scopesInput.value = storageGet(scopesKey);
 
     /*
@@ -136,8 +157,8 @@ class App {
       (approvalPrompt == GapiAuth.APPROVAL_PROMPT_FORCE);
   */
 
-    bool autoInit = storageGet(gapiAutoSignInKey) == true.toString();
-    autoSignInCheckbox.checked = autoInit;
+    bool autoInit = storageGet(gapiAutoInitKey) == true.toString();
+    autoInitCheckbox.checked = autoInit;
 
     _init() {
       clientId = clientIdInput.value;
@@ -154,11 +175,16 @@ class App {
       GapiAuth2InitParams params = new GapiAuth2InitParams()
         ..clientId = clientId
         ..scopes = scopes;
+      print('gapi.auth2.init(${params}');
       GoogleAuth auth = gapiAuth2.init(params);
+      print('auth: ${auth}');
       assert(
           auth.getIsSignedIn() == gapiAuth2.getAuthInstance().getIsSignedIn());
 
       _showAuthInfo();
+      auth.onSignedIn.listen((bool val) {
+        print("onSignedIn: ${val}");
+      });
       app.loginMain();
     }
 
@@ -167,6 +193,10 @@ class App {
       _init();
     });
 
+    userIdInput.onChange.listen((_) {
+      userId = userIdInput.value;
+      storageSet(userIdKey, userId);
+    });
     /*
     approvalPromptCheckbox.onChange.listen((_) {
       approvalPrompt = approvalPromptCheckbox.checked
@@ -174,12 +204,12 @@ class App {
           : null;
       storageSet(authApprovalPromptKey, approvalPrompt);
     });
-
-    autoSignInCheckbox.onChange.listen((_) {
+    */
+    autoInitCheckbox.onChange.listen((_) {
       storageSet(
-          gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
+          gapiAutoInitKey, (autoInitCheckbox.checked == true).toString());
     });
-  */
+
     if (autoInit) {
       _init();
     }

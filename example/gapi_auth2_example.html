@@ -42,8 +42,13 @@
             <label> <input type="checkbox" class="app-approval-prompt">Force approval prompt
             </label>
         </div>
+        <div class="form-group">
+            <label for="appUserId">USER ID</label> <input
+                class="form-control" id="appUserId"
+                placeholder="Optionally specify a user Id to authenticate with">
+        </div>
         <div class="checkbox">
-            <label> <input type="checkbox" class="app-autosignin">Auto init
+            <label> <input type="checkbox" class="app-autoinit">Auto init
                 on start
             </label>
         </div>
@@ -56,6 +61,11 @@
         </div>
 
         <div role="form" class="app-sign hidden">
+            <div class="checkbox">
+                <label> <input type="checkbox" class="app-autosignin">Auto sign in
+                </label>
+            </div>
+
             <div class="form-group">
                 <button class="btn btn-primary app-signin">Sign in</button>
                 <button class="btn btn-primary app-signin-select">Sign in - select</button>
