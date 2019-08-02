@@ -1,4 +1,4 @@
-@TestOn("browser && !content-shell")
+@TestOn("browser")
 // somehow it does not work in content-shell
 library gapi_test;
 
@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:test/test.dart';
 
+// ignore: deprecated_member_use_from_same_package
 import 'package:tekartik_google_jsapi/google_jsapi.dart';
 
 Gapi gapi;
@@ -17,7 +18,6 @@ Future<Gapi> testLoadGapi() {
 }
 
 void main() {
-  
   group('gapi', () {
     gapiMain();
   });
@@ -32,23 +32,22 @@ void gapiMain() {
       });
     });
   });
-  
+
   group('ok', () {
     setUp(() {
       return testLoadGapi();
     });
-  
+
     test('load bad client', () {
-      return gapi.client.load('drive', 'v3').catchError((GapiException e) {
+      return gapi.client.load('drive', 'v3').catchError((e) {
         expect(e is GapiException, true);
-        
       }); // v3 does not exist yet
     });
-    
+
     test('load drive v2 client', () {
       return gapi.client.load('drive', 'v2'); // v2 does exist
     });
-    
+
     test('load picker', () {
       return gapi.load('picker');
     });
@@ -58,7 +57,5 @@ void gapiMain() {
       return gapi.client.load('picker', '1');
     });
     */
-    
-    
   });
 }

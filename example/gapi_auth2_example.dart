@@ -8,7 +8,7 @@ GapiAuth2 gapiAuth2;
 Storage storage = window.localStorage;
 
 String storageKeyPref = 'com.tekartik.gapi_auth2_example';
-dynamic storageGet(String key) {
+String storageGet(String key) {
   return storage['$storageKeyPref.$key'];
 }
 
@@ -34,19 +34,20 @@ class App {
     signInForm.classes.remove('hidden');
     Element signResult = signInForm.querySelector('.app-sign-result');
 
-    CheckboxInputElement autoSignInCheckbox =
-    signInForm.querySelector('.app-autosignin');
+    var autoSignInCheckbox =
+        signInForm.querySelector('.app-autosignin') as CheckboxInputElement;
 
     bool autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
     autoSignInCheckbox.checked = autoSignIn;
 
-    _insertLine(String line) {
-      StringBuffer sb = new StringBuffer();
+    void _insertLine(String line) {
+      StringBuffer sb = StringBuffer();
       sb.writeln(line);
       sb.write(signResult.text);
       signResult.text = sb.toString();
     }
-    _signIn() async {
+
+    Future _signIn() async {
       await gapiAuth2.getAuthInstance().signIn();
       _insertLine("Signed in");
       _showAuthInfo();
@@ -66,7 +67,7 @@ class App {
       event.preventDefault();
       await gapiAuth2
           .getAuthInstance()
-          .signIn(new GapiAuth2SignInParams()..prompt = "select_account");
+          .signIn(GapiAuth2SignInParams()..prompt = "select_account");
       _insertLine("Signed in");
       _showAuthInfo();
     });
@@ -92,9 +93,9 @@ class App {
     });
 
     signInForm
-    .querySelector('button.app-user-disconnect')
-    .onClick
-    .listen((Event event) async {
+        .querySelector('button.app-user-disconnect')
+        .onClick
+        .listen((Event event) async {
       event.preventDefault();
       GoogleUser user = gapiAuth2.getAuthInstance().getCurrentUser();
       if (user != null) {
@@ -109,13 +110,12 @@ class App {
       storageSet(
           gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
     });
-
   }
 
   Element authorizeResult;
 
-  _showAuthInfo() {
-    StringBuffer sb = new StringBuffer();
+  void _showAuthInfo() {
+    StringBuffer sb = StringBuffer();
     GoogleAuth auth = gapiAuth2.getAuthInstance();
     sb.writeln("auth.isSignedIn: ${auth.getIsSignedIn()}");
     GoogleUser user = auth.getCurrentUser();
@@ -132,14 +132,15 @@ class App {
     Element authForm = querySelector('form.app-auth');
     authForm.classes.remove('hidden');
     Element authorizeButton = authForm.querySelector('button.app-authorize');
-    InputElement clientIdInput =
-        authForm.querySelector('input#appInputClientId');
-    InputElement userIdInput =
-    authForm.querySelector('input#appUserId');
-    InputElement scopesInput = authForm.querySelector('input#appInputScopes');
+    final clientIdInput =
+        authForm.querySelector('input#appInputClientId') as InputElement;
+    final userIdInput =
+        authForm.querySelector('input#appUserId') as InputElement;
+    final scopesInput =
+        authForm.querySelector('input#appInputScopes') as InputElement;
     authorizeResult = authForm.querySelector('.app-result');
-    CheckboxInputElement autoInitCheckbox =
-        authForm.querySelector('.app-autoinit');
+    final autoInitCheckbox =
+        authForm.querySelector('.app-autoinit') as CheckboxInputElement;
 
     String clientId = storageGet(clientIdKey);
     if (clientId == null) {
@@ -160,9 +161,9 @@ class App {
     bool autoInit = storageGet(gapiAutoInitKey) == true.toString();
     autoInitCheckbox.checked = autoInit;
 
-    _init() {
+    void _init() {
       clientId = clientIdInput.value;
-      if (clientId.length < 1) {
+      if (clientId.isEmpty) {
         authorizeResult.innerHtml = 'Missing CLIENT ID';
         return;
       }
@@ -172,7 +173,7 @@ class App {
       storageSet(scopesKey, scopesString);
       List<String> scopes = scopesString.split(',');
 
-      GapiAuth2InitParams params = new GapiAuth2InitParams()
+      GapiAuth2InitParams params = GapiAuth2InitParams()
         ..clientId = clientId
         ..scopes = scopes;
       print('gapi.auth2.init(${params}');
@@ -182,9 +183,10 @@ class App {
           auth.getIsSignedIn() == gapiAuth2.getAuthInstance().getIsSignedIn());
 
       _showAuthInfo();
-      auth.onSignedIn.listen((bool val) {
+      auth.onSignedIn.listen((val) {
         print("onSignedIn: ${val}");
       });
+
       app.loginMain();
     }
 
@@ -217,7 +219,7 @@ class App {
 
   Element loadGapiResult;
 
-  main() async {
+  Future main() async {
     Element loadGapiElement = querySelector('.app-gapi');
     loadGapiResult = loadGapiElement.querySelector('.app-result');
     loadGapiResult.innerHtml = 'loading GapiAuth2...';
@@ -233,8 +235,8 @@ class App {
   }
 }
 
-App app = new App();
+App app = App();
 
-main() {
+void main() {
   app.main();
 }

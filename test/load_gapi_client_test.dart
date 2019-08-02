@@ -1,10 +1,10 @@
-@TestOn("browser && !content-shell")
+@TestOn("browser")
 library auth_test;
 
-import 'package:test/test.dart';
+import 'dart:js';
 
 import 'package:tekartik_google_jsapi/gapi_client.dart';
-import 'dart:js';
+import 'package:test/test.dart';
 
 void main() {
   group('gapi_client', () {
@@ -19,17 +19,14 @@ void main() {
 
       expect(context['gapi']['client']['plus'], isNotNull);
 
-
-
       bool success = false;
       try {
         await gapiClient.load("plus", "v0");
         success = true;
       } catch (e) {
+        print(e);
       }
       expect(success, false);
-
     });
-
   });
 }

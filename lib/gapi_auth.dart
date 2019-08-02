@@ -1,30 +1,37 @@
 library tekartik_google_jsapi.gapi_auth;
 
-import 'dart:js';
 import 'dart:async';
+import 'dart:js';
+
 import 'gapi.dart';
 
 class GapiAuth {
   JsObject jsObject;
+
   GapiAuth._(this.jsObject);
 
-  static const SCOPE_EMAIL = 'email';
-  static const APPROVAL_PROMPT_FORCE = 'force';
+  static const scopeEmail = 'email';
+  static const approvalPromptForce = 'force';
+  @deprecated
+  // ignore: constant_identifier_names
+  static const SCOPE_EMAIL = scopeEmail;
+  @deprecated
+  // ignore: constant_identifier_names
+  static const APPROVAL_PROMPT_FORCE = approvalPromptForce;
 
   String getAccessToken() {
     var jsToken = jsObject.callMethod('getToken');
-    return jsToken['access_token'];
+    return jsToken['access_token'] as String;
   }
 
-  /**
-   * approvalPrompt can be 'force'
-   *
-   * @return token
-   */
-  Future<String> authorize(String clientId, List<String> scopes, {String approvalPrompt}) {
-    Completer completer = new Completer();
+  /// approvalPrompt can be 'force'
+  ///
+  /// @return token
+  Future<String> authorize(String clientId, List<String> scopes,
+      {String approvalPrompt}) {
+    final completer = Completer<String>();
     if (clientId == null) {
-      throw new ArgumentError("missing CLIENT_ID");
+      throw ArgumentError("missing CLIENT_ID");
     }
     var options = {
       'client_id': clientId,
@@ -32,23 +39,24 @@ class GapiAuth {
       'immediate': false,
       'approval_prompt': approvalPrompt
     };
-    var jsOptions = new JsObject.jsify(options);
+    var jsOptions = JsObject.jsify(options);
     void _onResult(authResult) {
       if (authResult != null) {
         //print(jsObjectAsCollection(authResult));
-        Exception e = gapiResponseParseException(authResult);
+        Exception e = gapiResponseParseException(authResult as JsObject);
         if (e != null) {
           completer.completeError(e);
           return;
         }
-        String oauthToken = authResult['access_token'];
+        String oauthToken = authResult['access_token'] as String;
         print('authed $oauthToken');
         completer.complete(oauthToken);
       } else {
         completer.completeError('no auth token');
       }
     }
-    jsObject.callMethod('authorize', [ jsOptions, _onResult ]);
+
+    jsObject.callMethod('authorize', [jsOptions, _onResult]);
 
     return completer.future;
   }
@@ -62,8 +70,5 @@ Future<GapiAuth> loadGapiAuth([Gapi gapi]) async {
   if (gapi['auth'] == null) {
     await gapi.load('auth');
   }
-  return new GapiAuth._(gapi['auth']);
-
+  return GapiAuth._(gapi['auth'] as JsObject);
 }
-
-

@@ -1,11 +1,11 @@
-@TestOn("browser && !content-shell")
+@TestOn("browser")
 library auth_test;
 
-import 'package:test/test.dart';
+import 'dart:async';
+import 'dart:js';
 
 import 'package:tekartik_google_jsapi/gapi.dart';
-import 'dart:js';
-import 'dart:async';
+import 'package:test/test.dart';
 
 void main() {
   group('gapi', () {
@@ -22,7 +22,7 @@ void main() {
 
       gapi = await loadGapiPlatform();
 
-      await new  Future.delayed(new Duration(milliseconds: 100));
+      await Future.delayed(Duration(milliseconds: 100));
       expect(gapi['auth'], isNull);
       expect(gapi['auth2'], isNull);
       expect(gapi['client'], isNull);
@@ -31,17 +31,16 @@ void main() {
 
       expect(gapi['auth'], isNotNull);
       expect(gapi['client'], isNull);
-      expect(gapi['auth2'], isNull);
+      expect(gapi['auth2'], isNotNull);
 
       // load client
       await gapi.load('client');
       expect(gapi['client'], isNotNull);
-      expect(gapi['auth2'], isNull);
+      expect(gapi['auth2'], isNotNull);
 
       // load auth2
       await gapi.load('auth2');
       expect(gapi['auth2'], isNotNull);
     });
-
   });
 }

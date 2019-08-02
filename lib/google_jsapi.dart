@@ -4,17 +4,17 @@ library tekartik_google_jsapi;
 import 'dart:async';
 import 'dart:js';
 
-import 'package:tekartik_utils/js_utils.dart';
+import 'package:tekartik_browser_utils/js_utils.dart';
 
 part 'src/auth.dart';
 part 'src/client.dart';
 part 'src/gapi.dart';
 
-Gapi _gapi;
+// Gapi _gapi;
 
 bool _debug = false;
 bool _checkGapiProperties([List<String> properties = const []]) {
-  JsObject jsGapi = context['gapi'];
+  JsObject jsGapi = context['gapi'] as JsObject;
   if (_debug) {
     print('_check gapi: ${jsGapi != null}');
   }
@@ -35,6 +35,7 @@ bool _checkGapiProperties([List<String> properties = const []]) {
   }
   return ok;
 }
+
 bool _checkPlatformLoaded() {
   return _checkGapiProperties();
 }
@@ -44,7 +45,7 @@ Future _waitForGapiPlatformLoaded() async {
     return;
   }
   // wait 1ms..and repeat
-  await new Future.delayed(new Duration(milliseconds: 1));
+  await Future.delayed(Duration(milliseconds: 1));
   await _waitForGapiPlatformLoaded();
 }
 
@@ -57,7 +58,7 @@ Future _waitForGapiClientLoaded() async {
     return;
   }
   // wait 1ms..and repeat
-  await new Future.delayed(new Duration(milliseconds: 1));
+  await Future.delayed(Duration(milliseconds: 1));
   await _waitForGapiClientLoaded();
 }
 
@@ -65,28 +66,26 @@ Future _waitForGapiClientLoaded() async {
 /// if you want the bare feature
 ///
 Future<Gapi> loadGapiPlatform() async {
-
   // check if loaded first
   if (_checkPlatformLoaded()) {
-    return new Gapi(context['gapi']);
+    return Gapi(context['gapi'] as JsObject);
   }
   await loadJavascriptScript('//apis.google.com/js/platform.js');
   await _waitForGapiPlatformLoaded();
-  return new Gapi(context['gapi']);
+  return Gapi(context['gapi'] as JsObject);
 }
 
 ///
 /// if you want the whole feature set
 ///
 Future<Gapi> loadGapiClientPlatform() async {
-
   // check if loaded first
   if (_checkClientLoaded()) {
-    return new Gapi(context['gapi']);
+    return Gapi(context['gapi'] as JsObject);
   }
   await loadJavascriptScript('//apis.google.com/js/client:platform.js');
   await _waitForGapiClientLoaded();
-  return new Gapi(context['gapi']);
+  return Gapi(context['gapi'] as JsObject);
 }
 
 // compatibility - load client
