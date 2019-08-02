@@ -8,15 +8,15 @@ class Promise {
   Promise(this._jsObject);
 
   Future get asFuture {
-    Completer completer = new Completer();
+    Completer completer = Completer();
     _jsObject.callMethod('then', [
       // onFullfilled
-          (value) {
+      (value) {
         print("onFullfilled");
         completer.complete(value);
       },
       // onRejected
-          (reason) {
+      (reason) {
         print("reason");
         completer.completeError(reason);
       }

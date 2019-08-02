@@ -1,12 +1,29 @@
 name: tekartik_google_jsapi
-version: 0.1.0
+version: 0.2.0
 description: js api loader
+
+environment:
+  sdk: '>=2.4.0-dev <3.0.0'
 dependencies:
-  browser: any
-  tekartik_utils:
-    git: git://github.com/alextekartik/tekartik_utils.dart
+  tekartik_browser_utils:
+    git:
+      url: git://github.com/tekartik/browser_utils.dart
+      ref: dart2
+    version: '>=0.1.0'
+
 dev_dependencies:
-  bootstrap: any
+  tekartik_bootstrap:
+    git:
+      url: git://github.com/tekartik/bootstrap.dart
+      ref: dart2
+    version: '>=0.3.0'
   test: any
-
-
+  build_runner:
+  build_web_compilers:
+  build_test:
+  process_run: '>=0.10.2'
+  chrome_travis:
+    git:
+      url: git://github.com/tekartik/chrome_travis.dart
+      ref: dart2
+    version: '>=0.1.4'

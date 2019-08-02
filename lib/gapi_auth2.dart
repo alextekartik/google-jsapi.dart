@@ -1,33 +1,63 @@
 library tekartik_google_auth;
 
-import 'dart:js';
 import 'dart:async';
+import 'dart:js';
+
+import 'package:tekartik_browser_utils/browser_utils_import.dart';
+import 'package:tekartik_common_utils/bool_utils.dart';
+
 import 'gapi.dart';
 import 'promise.dart';
 
 class BasicProfile {
   JsObject _jsObject;
+
   BasicProfile._(this._jsObject);
-  String get name => _jsObject.callMethod('getName');
-  String get id => _jsObject.callMethod('getId');
-  String get email => _jsObject.callMethod('getEmail');
-  String get imageUrl => _jsObject.callMethod('getImageUrl');
-  toString() {
+
+  String get name => _jsObject.callMethod('getName') as String;
+
+  String get id => _jsObject.callMethod('getId') as String;
+
+  String get email => _jsObject.callMethod('getEmail') as String;
+
+  String get imageUrl => _jsObject.callMethod('getImageUrl') as String;
+
+  @override
+  String toString() {
     return "${id} ${name} ${email} ${imageUrl}";
   }
 }
 
+class GoogleAuthResponse {
+  JsObject _jsObject;
+
+  GoogleAuthResponse._(this._jsObject);
+
+  String get token => _jsObject.callMethod('id_token') as String;
+}
+
 class GoogleUser {
   JsObject _jsObject;
+
   GoogleUser._(this._jsObject);
-  String get id => _jsObject.callMethod('getId');
+
+  String get id => _jsObject.callMethod('getId') as String;
+
   BasicProfile get basicProfile =>
-      new BasicProfile._(_jsObject.callMethod('getBasicProfile'));
-  toString() {
+      BasicProfile._(_jsObject.callMethod('getBasicProfile') as JsObject);
+
+  @override
+  String toString() {
     return "${id} ${isSignedIn}";
   }
 
-  bool get isSignedIn => _jsObject.callMethod('isSignedIn');
+  bool get isSignedIn => _jsObject.callMethod('isSignedIn') as bool;
+
+  GoogleAuthResponse getAuthResponse() {
+    var _jsAuthResponse = _jsObject.callMethod('getAuthResponse') as JsObject;
+    // devPrint(jsObjectKeys(_jsAuthResponse));
+    return GoogleAuthResponse._(_jsAuthResponse);
+  }
 
   void disconnect() {
     _jsObject.callMethod('disconnect');
@@ -40,48 +70,53 @@ class GapiAuth2SignInParams {
   JsObject jsify() {
     Map map = {};
     map['prompt'] = prompt;
-    return new JsObject.jsify(map);
+    return JsObject.jsify(map);
   }
 }
 
 class GoogleAuth {
   JsObject _jsObject;
+
   GoogleAuth._(this._jsObject);
+
   GoogleAuth() {
-    JsObject auth2 = context['gapi']['auth2'];
-    _jsObject = auth2.callMethod('getAuthInstance');
+    JsObject auth2 = context['gapi']['auth2'] as JsObject;
+    _jsObject = auth2.callMethod('getAuthInstance') as JsObject;
     //print(jsObjectToDebugString(_jsObject));
   }
 
   GoogleUser getCurrentUser() {
     JsObject jsCurrentUser =
-        (_jsObject['currentUser'] as JsObject).callMethod('get');
+        (_jsObject['currentUser'] as JsObject).callMethod('get') as JsObject;
     if (jsCurrentUser != null) {
-      return new GoogleUser._(jsCurrentUser);
+      return GoogleUser._(jsCurrentUser);
     }
     return null;
   }
 
   bool getIsSignedIn() {
-    return (_jsObject['isSignedIn'] as JsObject).callMethod('get');
+    return (_jsObject['isSignedIn'] as JsObject).callMethod('get') as bool;
   }
 
   Stream<bool> get onSignedIn {
-    StreamController ctlr = new StreamController();
-    signInChange(bool val) {
+    StreamController ctlr = StreamController();
+    void signInChange(bool val) {
       ctlr.add(bool);
     }
+
     (_jsObject['isSignedIn'] as JsObject).callMethod('listen', [signInChange]);
-    return ctlr.stream;
+    return ctlr.stream.transform(StreamTransformer<dynamic, bool>.fromHandlers(
+        handleData: (data, sink) => sink.add(parseBool(data))));
   }
 
   Future signOut() async {
-    await new Promise(_jsObject.callMethod('signOut')).asFuture;
+    await Promise(_jsObject.callMethod('signOut') as JsObject).asFuture;
   }
 
   Future signIn([GapiAuth2SignInParams params]) async {
     var _params = params == null ? null : params.jsify();
-    await new Promise(_jsObject.callMethod('signIn', [_params])).asFuture;
+    await Promise(_jsObject.callMethod('signIn', [_params]) as JsObject)
+        .asFuture;
   }
 
   void disconnect() {
@@ -92,11 +127,12 @@ class GoogleAuth {
 class GapiAuth2InitParams {
   String clientId;
   List<String> scopes;
+
   // exp
   //String userId;
 
   JsObject jsify() {
-    return new JsObject.jsify(toJson());
+    return JsObject.jsify(toJson());
   }
 
   Map toJson() {
@@ -113,22 +149,25 @@ class GapiAuth2InitParams {
   }
 
   @override
-  toString() => "${toJson()}";
+  String toString() => "${toJson()}";
 }
 
 class GapiAuth2 {
   JsObject _jsObject;
+
   GapiAuth2() {
-    _jsObject = context['gapi']['auth2'];
+    _jsObject = context['gapi']['auth2'] as JsObject;
   }
+
   GapiAuth2._(this._jsObject);
 
   GoogleAuth init(GapiAuth2InitParams params) {
-    return new GoogleAuth._(_jsObject.callMethod('init', [params.jsify()]));
+    return GoogleAuth._(
+        _jsObject.callMethod('init', [params.jsify()]) as JsObject);
   }
 
   GoogleAuth getAuthInstance() {
-    return new GoogleAuth._(_jsObject.callMethod('getAuthInstance'));
+    return GoogleAuth._(_jsObject.callMethod('getAuthInstance') as JsObject);
   }
 }
 
@@ -140,5 +179,5 @@ Future<GapiAuth2> loadGapiAuth2([Gapi gapi]) async {
   if (gapi['auth2'] == null) {
     await gapi.load('auth2');
   }
-  return new GapiAuth2._(gapi['auth2']);
+  return GapiAuth2._(gapi['auth2'] as JsObject);
 }

@@ -1,10 +1,10 @@
-@TestOn("browser && !content-shell")
+@TestOn("browser")
 library auth_test;
 
-import 'package:test/test.dart';
+import 'dart:js';
 
 import 'package:tekartik_google_jsapi/gapi_auth2.dart';
-import 'dart:js';
+import 'package:test/test.dart';
 
 void main() {
   group('gapi_auth2', () {
@@ -15,6 +15,5 @@ void main() {
       expect(context['gapi']['auth2'], isNotNull);
       expect(context['gapi']['signin2'], isNotNull);
     });
-
   });
 }

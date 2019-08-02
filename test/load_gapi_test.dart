@@ -1,4 +1,4 @@
-@TestOn("browser && !content-shell")
+@TestOn("browser")
 library auth_test;
 
 import 'package:test/test.dart';
@@ -13,13 +13,12 @@ void main() {
         gapi = _gapi;
       });
     });
-    
+
     test('load', () async {
       await loadGapi();
-      expect(gapi['auth2'], isNull);
+      expect(gapi['auth2'], isNotNull);
       expect(gapi['client'], isNotNull);
       expect(gapi['auth'], isNotNull);
     });
-
   });
 }

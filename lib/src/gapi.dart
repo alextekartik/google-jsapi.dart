@@ -1,6 +1,6 @@
 part of tekartik_google_jsapi;
 
-bool _googleJsClientLoaded;
+// bool _googleJsClientLoaded;
 
 class Gapi {
   JsObject jsObject;
@@ -15,49 +15,43 @@ class Gapi {
   @deprecated
   GapiAuth get auth {
     if (_auth == null) {
-      _auth = new GapiAuth(jsObject['auth']);
+      _auth = GapiAuth(jsObject['auth'] as JsObject);
     }
     return _auth;
   }
 
-  operator [](String key) => jsObject[key];
+  dynamic operator [](String key) => jsObject[key];
 
   // use load client
   GapiClient get client {
     if (_client == null) {
-      _client = new GapiClient(jsObject['client']);
+      _client = GapiClient(jsObject['client'] as JsObject);
     }
     return _client;
   }
 
-
   Future load(String api) {
-    Completer completer = new Completer();
+    Completer completer = Completer();
     void _onLoaded([jsData]) {
       completer.complete();
     }
-    var jsOptions = new JsObject.jsify({'callback': _onLoaded});
-    List args = [ api, jsOptions ];
+
+    var jsOptions = JsObject.jsify({'callback': _onLoaded});
+    List args = [api, jsOptions];
     jsObject.callMethod('load', args);
 
     return completer.future;
   }
-
 }
 
-
-
 class GapiException implements Exception {
-    /**
-     * A message describing the format error.
-     */
-    final String message;
+  /// A message describing the format error.
+  final String message;
 
-    /**
-     * Creates a new FormatException with an optional error [message].
-     */
-    const GapiException([this.message = ""]);
-    String toString() => "GapiException: $message";
+  /// Creates a new FormatException with an optional error [message].
+  const GapiException([this.message = ""]);
+  @override
+  String toString() => "GapiException: $message";
 }
 
 Exception gapiResponseParseException(JsObject jsData) {
@@ -65,14 +59,13 @@ Exception gapiResponseParseException(JsObject jsData) {
     var jsError = jsData['error'];
     if (jsError != null) {
       if ((jsError is JsObject) && (!(jsError is JsArray))) {
-        int code = jsError['code'];
-        String message = jsError['message'];
-        return new GapiException("$code - $message");
+        int code = jsError['code'] as int;
+        String message = jsError['message'] as String;
+        return GapiException("$code - $message");
       } else {
-        return new GapiException('error');
+        return const GapiException('error');
       }
     }
   }
   return null;
 }
-
