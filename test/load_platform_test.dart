@@ -22,7 +22,7 @@ void main() {
 
       gapi = await loadGapiPlatform();
 
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       expect(gapi['auth'], isNull);
       expect(gapi['auth2'], isNull);
       expect(gapi['client'], isNull);
