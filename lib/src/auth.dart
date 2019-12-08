@@ -25,7 +25,7 @@ class GapiAuth {
       {String approvalPrompt}) {
     final completer = Completer<String>();
     if (clientId == null) {
-      throw ArgumentError("missing CLIENT_ID");
+      throw ArgumentError('missing CLIENT_ID');
     }
     var options = {
       'client_id': clientId,
@@ -37,12 +37,12 @@ class GapiAuth {
     void _onResult(authResult) {
       if (authResult != null) {
         //print(jsObjectAsCollection(authResult));
-        Exception e = gapiResponseParseException(authResult as JsObject);
+        final e = gapiResponseParseException(authResult as JsObject);
         if (e != null) {
           completer.completeError(e);
           return;
         }
-        String oauthToken = authResult['access_token'] as String;
+        final oauthToken = authResult['access_token'] as String;
         print('authed $oauthToken');
         completer.complete(oauthToken);
       } else {

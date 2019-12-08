@@ -10,7 +10,7 @@ import 'gapi.dart';
 import 'promise.dart';
 
 class BasicProfile {
-  JsObject _jsObject;
+  final JsObject _jsObject;
 
   BasicProfile._(this._jsObject);
 
@@ -24,12 +24,12 @@ class BasicProfile {
 
   @override
   String toString() {
-    return "${id} ${name} ${email} ${imageUrl}";
+    return '${id} ${name} ${email} ${imageUrl}';
   }
 }
 
 class GoogleAuthResponse {
-  JsObject _jsObject;
+  final JsObject _jsObject;
 
   GoogleAuthResponse._(this._jsObject);
 
@@ -37,7 +37,7 @@ class GoogleAuthResponse {
 }
 
 class GoogleUser {
-  JsObject _jsObject;
+  final JsObject _jsObject;
 
   GoogleUser._(this._jsObject);
 
@@ -48,7 +48,7 @@ class GoogleUser {
 
   @override
   String toString() {
-    return "${id} ${isSignedIn}";
+    return '$id $isSignedIn';
   }
 
   bool get isSignedIn => _jsObject.callMethod('isSignedIn') as bool;
@@ -68,7 +68,7 @@ class GoogleUser {
 class GapiAuth2SignInParams {
   String prompt; // none,login,consent,select_account
   JsObject jsify() {
-    Map map = {};
+    final map = {};
     map['prompt'] = prompt;
     return JsObject.jsify(map);
   }
@@ -80,13 +80,13 @@ class GoogleAuth {
   GoogleAuth._(this._jsObject);
 
   GoogleAuth() {
-    JsObject auth2 = context['gapi']['auth2'] as JsObject;
+    final auth2 = context['gapi']['auth2'] as JsObject;
     _jsObject = auth2.callMethod('getAuthInstance') as JsObject;
     //print(jsObjectToDebugString(_jsObject));
   }
 
   GoogleUser getCurrentUser() {
-    JsObject jsCurrentUser =
+    final jsCurrentUser =
         (_jsObject['currentUser'] as JsObject).callMethod('get') as JsObject;
     if (jsCurrentUser != null) {
       return GoogleUser._(jsCurrentUser);
@@ -99,7 +99,7 @@ class GoogleAuth {
   }
 
   Stream<bool> get onSignedIn {
-    StreamController ctlr = StreamController();
+    final ctlr = StreamController();
     void signInChange(bool val) {
       ctlr.add(bool);
     }
@@ -136,7 +136,7 @@ class GapiAuth2InitParams {
   }
 
   Map toJson() {
-    Map map = {};
+    final map = {};
     map['client_id'] = clientId;
     map['scope'] = scopes.join(' ');
     /*
@@ -149,7 +149,7 @@ class GapiAuth2InitParams {
   }
 
   @override
-  String toString() => "${toJson()}";
+  String toString() => '${toJson()}';
 }
 
 class GapiAuth2 {
@@ -172,9 +172,8 @@ class GapiAuth2 {
 }
 
 Future<GapiAuth2> loadGapiAuth2([Gapi gapi]) async {
-  if (gapi == null) {
-    gapi = await loadGapiPlatform();
-  }
+  gapi ??= await loadGapiPlatform();
+
   // need loaded?
   if (gapi['auth2'] == null) {
     await gapi.load('auth2');

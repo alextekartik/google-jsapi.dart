@@ -29,9 +29,9 @@ String clientIdKey = 'client_id';
 String scopesKey = 'scopes';
 
 void authMain() {
-  Element authForm = querySelector('form.app-auth');
+  final authForm = querySelector('form.app-auth');
   authForm.classes.remove('hidden');
-  Element authorizeButton = authForm.querySelector('button.app-authorize');
+  final authorizeButton = authForm.querySelector('button.app-authorize');
   var clientIdInput =
       authForm.querySelector('input#appInputClientId') as InputElement;
   final scopesInput =
@@ -45,25 +45,25 @@ void authMain() {
   clientIdInput.value = storageGet(clientIdKey);
   scopesInput.value = storageGet(scopesKey);
 
-  String approvalPrompt = storageGet(authApprovalPromptKey);
+  var approvalPrompt = storageGet(authApprovalPromptKey);
 
   approvalPromptCheckbox.checked =
       (approvalPrompt == GapiAuth.approvalPromptForce);
 
-  bool autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
+  final autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
   autoSignInCheckbox.checked = autoSignIn;
 
   void _signIn() {
-    String clientId = clientIdInput.value;
+    final clientId = clientIdInput.value;
     if (clientId.isEmpty) {
       authorizeResult.innerHtml = 'Missing CLIENT ID';
       return;
     }
     storageSet(clientIdKey, clientId);
 
-    String scopesString = scopesInput.value;
+    final scopesString = scopesInput.value;
     storageSet(scopesKey, scopesString);
-    List<String> scopes = scopesString.split(',');
+    final scopes = scopesString.split(',');
 
     gapiAuth
         .authorize(clientId, scopes, approvalPrompt: approvalPrompt)
@@ -97,7 +97,7 @@ Element loadGapiResult;
 
 Future _loadGapi() async {
   loadGapiResult.innerHtml = 'loading...';
-  Gapi gapi = await loadGapi().then((gapi) {
+  final gapi = await loadGapi().then((gapi) {
     loadGapiResult.innerHtml = 'Gapi loaded';
     return gapi;
   }, onError: (e, st) {
@@ -109,13 +109,13 @@ Future _loadGapi() async {
 }
 
 void main() {
-  Element loadGapiForm = querySelector('form.app-gapi');
-  Element loadGapiButton = loadGapiForm.querySelector('button.app-load');
+  final loadGapiForm = querySelector('form.app-gapi');
+  final loadGapiButton = loadGapiForm.querySelector('button.app-load');
   loadGapiResult = loadGapiForm.querySelector('.app-result');
   final autoLoadCheckbox =
       loadGapiForm.querySelector('.app-autoload') as CheckboxInputElement;
 
-  bool autoload = storageGet(gapiAutoLoadKey) == true.toString();
+  final autoload = storageGet(gapiAutoLoadKey) == true.toString();
 
   autoLoadCheckbox.checked = autoload;
 

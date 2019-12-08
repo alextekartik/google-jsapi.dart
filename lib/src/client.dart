@@ -5,10 +5,10 @@ class GapiClient {
   GapiClient(this.jsObject);
 
   Future load(String api, String version) {
-    Completer completer = Completer();
+    final completer = Completer();
     void _onLoaded([jsData]) {
       if (jsData != null) {
-        Exception e = gapiResponseParseException(jsData as JsObject);
+        final e = gapiResponseParseException(jsData as JsObject);
         if (e != null) {
           completer.completeError(e);
           return;
@@ -17,7 +17,7 @@ class GapiClient {
       completer.complete();
     }
 
-    List args = [api, version, _onLoaded];
+    final args = [api, version, _onLoaded];
     jsObject.callMethod('load', args);
 
     return completer.future;

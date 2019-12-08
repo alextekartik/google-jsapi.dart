@@ -14,15 +14,15 @@ part 'src/gapi.dart';
 
 bool _debug = false;
 bool _checkGapiProperties([List<String> properties = const []]) {
-  JsObject jsGapi = context['gapi'] as JsObject;
+  final jsGapi = context['gapi'] as JsObject;
   if (_debug) {
     print('_check gapi: ${jsGapi != null}');
   }
   if (jsGapi == null) {
     return false;
   }
-  bool ok = true;
-  for (String property in properties) {
+  var ok = true;
+  for (final property in properties) {
     if (_debug) {
       print('_check gapi[${property}]: ${jsGapi[property] != null}');
     }

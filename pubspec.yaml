@@ -1,9 +1,9 @@
 name: tekartik_google_jsapi
-version: 0.2.0
+version: 0.2.1
 description: js api loader
 
 environment:
-  sdk: '>=2.4.0-dev <3.0.0'
+  sdk: '>=2.5.0 <3.0.0'
 dependencies:
   tekartik_browser_utils:
     git:
@@ -27,3 +27,7 @@ dev_dependencies:
       url: git://github.com/tekartik/chrome_travis.dart
       ref: dart2
     version: '>=0.1.4'
+  tekartik_common_utils:
+    git:
+      url: git://github.com/tekartik/common_utils.dart
+      ref: dart2
