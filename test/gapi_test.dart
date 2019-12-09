@@ -1,4 +1,4 @@
-@TestOn("browser")
+@TestOn('browser')
 // somehow it does not work in content-shell
 library gapi_test;
 

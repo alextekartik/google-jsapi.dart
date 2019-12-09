@@ -14,13 +14,13 @@ class Gapi {
   dynamic operator [](String key) => jsObject[key];
 
   Future load(String api) {
-    Completer completer = Completer();
+    final completer = Completer();
     void _onLoaded([jsData]) {
       completer.complete();
     }
 
     var jsOptions = JsObject.jsify({'callback': _onLoaded});
-    List args = [api, jsOptions];
+    final args = [api, jsOptions];
     jsObject.callMethod('load', args);
 
     return completer.future;
@@ -32,9 +32,9 @@ class GapiException implements Exception {
   final String message;
 
   /// Creates a new FormatException with an optional error [message].
-  const GapiException([this.message = ""]);
+  const GapiException([this.message = '']);
   @override
-  String toString() => "GapiException: $message";
+  String toString() => 'GapiException: $message';
 }
 
 Exception gapiResponseParseException(JsObject jsData) {
@@ -44,7 +44,7 @@ Exception gapiResponseParseException(JsObject jsData) {
       if ((jsError is JsObject) && (!(jsError is JsArray))) {
         var code = jsError['code'] as int;
         final message = jsError['message'] as String;
-        return GapiException("$code - $message");
+        return GapiException('$code - $message');
       } else {
         return const GapiException('error');
       }
@@ -57,15 +57,15 @@ Exception gapiResponseParseException(JsObject jsData) {
 
 bool _debug = false;
 bool _checkGapiProperties([List<String> properties = const []]) {
-  JsObject jsGapi = context['gapi'] as JsObject;
+  final jsGapi = context['gapi'] as JsObject;
   if (_debug) {
     print('_check gapi: ${jsGapi != null}');
   }
   if (jsGapi == null) {
     return false;
   }
-  bool ok = true;
-  for (String property in properties) {
+  var ok = true;
+  for (final property in properties) {
     if (_debug) {
       print('_check gapi[${property}]: ${jsGapi[property] != null}');
     }

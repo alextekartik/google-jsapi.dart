@@ -1,4 +1,4 @@
-@TestOn("browser")
+@TestOn('browser')
 library auth_test;
 
 import 'package:test/test.dart';
