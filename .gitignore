@@ -5,6 +5,10 @@ packages
 pubspec.lock
 tmp.*
 build
-.idea/
 .pub/
 .dart_tool/
+
+# IDE
+.idea/
+.vscode/
+*.iml
