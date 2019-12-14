@@ -13,15 +13,13 @@ void main() {
       final gapiClient = await loadGapiClient();
       expect(gapiClient, isNotNull);
       expect(context['gapi']['client'], isNotNull);
-      expect(context['gapi']['client']['plus'], isNull);
-
-      await gapiClient.load('plus', 'v1');
-
-      expect(context['gapi']['client']['plus'], isNotNull);
+      expect(context['gapi']['client']['people'], isNull);
+      await gapiClient.load('people', 'v1');
+      expect(context['gapi']['client']['people'], isNotNull);
 
       var success = false;
       try {
-        await gapiClient.load('plus', 'v0');
+        await gapiClient.load('people', 'v0');
         success = true;
       } catch (e) {
         print(e);
