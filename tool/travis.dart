@@ -8,7 +8,8 @@ Future main() async {
   dartanalyzer --fatal-warnings --fatal-infos lib test tool example
   dartfmt -w lib test tool example --set-exit-if-changed
 
-  pub run test -p vm -j 1
+  # no vm tests
+  # pub run test -p vm -j 1
   # pub run build_runner test -- -p vm -j 1 test/multiplatform
   
   pub run test -p chrome -j 1
