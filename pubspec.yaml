@@ -1,9 +1,9 @@
 name: tekartik_google_jsapi
 version: 0.2.1
 description: js api loader
-
+publish_to: none
 environment:
-  sdk: '>=2.5.0 <3.0.0'
+  sdk: '>=2.10.0-0 <3.0.0'
 dependencies:
   tekartik_browser_utils:
     git:
@@ -12,6 +12,7 @@ dependencies:
     version: '>=0.1.0'
 
 dev_dependencies:
+  dev_test:
   tekartik_bootstrap:
     git:
       url: git://github.com/tekartik/bootstrap.dart
