@@ -24,7 +24,7 @@ class BasicProfile {
 
   @override
   String toString() {
-    return '${id} ${name} ${email} ${imageUrl}';
+    return '$id $name $email $imageUrl';
   }
 }
 

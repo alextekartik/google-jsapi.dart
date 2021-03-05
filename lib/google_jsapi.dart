@@ -24,7 +24,7 @@ bool _checkGapiProperties([List<String> properties = const []]) {
   var ok = true;
   for (final property in properties) {
     if (_debug) {
-      print('_check gapi[${property}]: ${jsGapi[property] != null}');
+      print('_check gapi[$property]: ${jsGapi[property] != null}');
     }
     if (jsGapi[property] == null) {
       ok = false;
