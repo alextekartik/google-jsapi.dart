@@ -119,7 +119,7 @@ class App {
     final auth = gapiAuth2.getAuthInstance();
     sb.writeln('auth.isSignedIn: ${auth.getIsSignedIn()}');
     final user = auth.getCurrentUser();
-    sb.writeln('user: ${user}');
+    sb.writeln('user: $user');
 
     if (user.isSignedIn) {
       sb.writeln('email: ${user.basicProfile.email}');
@@ -175,15 +175,15 @@ class App {
       final params = GapiAuth2InitParams()
         ..clientId = clientId
         ..scopes = scopes;
-      print('gapi.auth2.init(${params}');
+      print('gapi.auth2.init($params');
       final auth = gapiAuth2.init(params);
-      print('auth: ${auth}');
+      print('auth: $auth');
       assert(
           auth.getIsSignedIn() == gapiAuth2.getAuthInstance().getIsSignedIn());
 
       _showAuthInfo();
       auth.onSignedIn.listen((val) {
-        print('onSignedIn: ${val}');
+        print('onSignedIn: $val');
       });
 
       app.loginMain();
