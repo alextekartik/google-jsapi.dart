@@ -14,7 +14,7 @@ void main() {
 
 void authMain() {
   group('gapi', () {
-    GapiAuth gapiAuth;
+    late GapiAuth gapiAuth;
     setUp(() async {
       gapiAuth = await loadGapiAuth();
     });

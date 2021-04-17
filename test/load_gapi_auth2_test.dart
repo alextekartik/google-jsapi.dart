@@ -12,8 +12,8 @@ void main() {
       expect(context['gapi'], isNull);
       final gapiAuth2 = await loadGapiAuth2();
       expect(gapiAuth2, isNotNull);
-      expect(context['gapi']['auth2'], isNotNull);
-      expect(context['gapi']['signin2'], isNotNull);
+      expect((context['gapi'] as JsObject)['auth2'], isNotNull);
+      expect((context['gapi'] as JsObject)['signin2'], isNotNull);
     });
   });
 }

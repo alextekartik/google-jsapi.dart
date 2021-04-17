@@ -3,16 +3,16 @@ library google_jsapi_example;
 import 'dart:html';
 import 'package:tekartik_google_jsapi/gapi_auth2.dart';
 
-GapiAuth2 gapiAuth2;
+late GapiAuth2 gapiAuth2;
 
 Storage storage = window.localStorage;
 
 String storageKeyPref = 'com.tekartik.gapi_auth2_example';
-String storageGet(String key) {
+String? storageGet(String key) {
   return storage['$storageKeyPref.$key'];
 }
 
-void storageSet(String key, String value) {
+void storageSet(String key, String? value) {
   if (value == null) {
     storage.remove('$storageKeyPref.$key');
   } else {
@@ -30,7 +30,7 @@ String scopesKey = 'scopes';
 
 class App {
   void loginMain() {
-    final signInForm = querySelector('div.app-sign');
+    final signInForm = querySelector('div.app-sign')!;
     signInForm.classes.remove('hidden');
     final signResult = signInForm.querySelector('.app-sign-result');
 
@@ -43,7 +43,7 @@ class App {
     void _insertLine(String line) {
       final sb = StringBuffer();
       sb.writeln(line);
-      sb.write(signResult.text);
+      sb.write(signResult!.text);
       signResult.text = sb.toString();
     }
 
@@ -56,12 +56,15 @@ class App {
     if (autoSignIn) {
       _signIn();
     }
-    signInForm.querySelector('button.app-signin').onClick.listen((Event event) {
+    signInForm
+        .querySelector('button.app-signin')!
+        .onClick
+        .listen((Event event) {
       event.preventDefault();
       _signIn();
     });
     signInForm
-        .querySelector('button.app-signin-select')
+        .querySelector('button.app-signin-select')!
         .onClick
         .listen((Event event) async {
       event.preventDefault();
@@ -73,7 +76,7 @@ class App {
     });
 
     signInForm
-        .querySelector('button.app-signout')
+        .querySelector('button.app-signout')!
         .onClick
         .listen((Event event) async {
       event.preventDefault();
@@ -83,7 +86,7 @@ class App {
     });
 
     signInForm
-        .querySelector('button.app-disconnect')
+        .querySelector('button.app-disconnect')!
         .onClick
         .listen((Event event) async {
       event.preventDefault();
@@ -93,7 +96,7 @@ class App {
     });
 
     signInForm
-        .querySelector('button.app-user-disconnect')
+        .querySelector('button.app-user-disconnect')!
         .onClick
         .listen((Event event) async {
       event.preventDefault();
@@ -112,26 +115,26 @@ class App {
     });
   }
 
-  Element authorizeResult;
+  Element? authorizeResult;
 
   void _showAuthInfo() {
     final sb = StringBuffer();
     final auth = gapiAuth2.getAuthInstance();
     sb.writeln('auth.isSignedIn: ${auth.getIsSignedIn()}');
-    final user = auth.getCurrentUser();
+    final user = auth.getCurrentUser()!;
     sb.writeln('user: $user');
 
-    if (user.isSignedIn) {
+    if (user.isSignedIn!) {
       sb.writeln('email: ${user.basicProfile.email}');
     }
 
-    authorizeResult.text = sb.toString();
+    authorizeResult!.text = sb.toString();
   }
 
   void authMain() {
-    final authForm = querySelector('form.app-auth');
+    final authForm = querySelector('form.app-auth')!;
     authForm.classes.remove('hidden');
-    final authorizeButton = authForm.querySelector('button.app-authorize');
+    final authorizeButton = authForm.querySelector('button.app-authorize')!;
     final clientIdInput =
         authForm.querySelector('input#appInputClientId') as InputElement;
     final userIdInput =
@@ -142,7 +145,7 @@ class App {
     final autoInitCheckbox =
         authForm.querySelector('.app-autoinit') as CheckboxInputElement;
 
-    var clientId =
+    String? clientId =
         storageGet(clientIdKey) ?? '124267391961.apps.googleusercontent.com';
 
     var userId = storageGet(userIdKey);
@@ -162,13 +165,13 @@ class App {
 
     void _init() {
       clientId = clientIdInput.value;
-      if (clientId.isEmpty) {
-        authorizeResult.innerHtml = 'Missing CLIENT ID';
+      if (clientId!.isEmpty) {
+        authorizeResult!.innerHtml = 'Missing CLIENT ID';
         return;
       }
       storageSet(clientIdKey, clientId);
 
-      final scopesString = scopesInput.value;
+      final scopesString = scopesInput.value!;
       storageSet(scopesKey, scopesString);
       final scopes = scopesString.split(',');
 
@@ -216,17 +219,17 @@ class App {
     }
   }
 
-  Element loadGapiResult;
+  Element? loadGapiResult;
 
   Future main() async {
-    final loadGapiElement = querySelector('.app-gapi');
+    final loadGapiElement = querySelector('.app-gapi')!;
     loadGapiResult = loadGapiElement.querySelector('.app-result');
-    loadGapiResult.innerHtml = 'loading GapiAuth2...';
+    loadGapiResult!.innerHtml = 'loading GapiAuth2...';
     try {
       gapiAuth2 = await loadGapiAuth2();
-      loadGapiResult.innerHtml = 'GapiAuth2 loaded';
+      loadGapiResult!.innerHtml = 'GapiAuth2 loaded';
     } catch (e) {
-      loadGapiResult.innerHtml = 'load failed $e';
+      loadGapiResult!.innerHtml = 'load failed $e';
       rethrow;
     }
 

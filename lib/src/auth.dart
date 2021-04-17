@@ -1,7 +1,7 @@
 part of tekartik_google_jsapi;
 
 class GapiAuth {
-  JsObject jsObject;
+  JsObject? jsObject;
   GapiAuth(this.jsObject);
 
   static const scopeEmail = 'email';
@@ -13,20 +13,17 @@ class GapiAuth {
   // ignore: constant_identifier_names
   static const APPROVAL_PROMPT_FORCE = approvalPromptForce;
 
-  String getAccessToken() {
-    var jsToken = jsObject.callMethod('getToken');
-    return jsToken['access_token'] as String;
+  String? getAccessToken() {
+    var jsToken = jsObject!.callMethod('getToken') as JsObject;
+    return jsToken['access_token'] as String?;
   }
 
   /// approvalPrompt can be 'force'
   ///
   /// @return token
   Future<String> authorize(String clientId, List<String> scopes,
-      {String approvalPrompt}) {
+      {String? approvalPrompt}) {
     final completer = Completer<String>();
-    if (clientId == null) {
-      throw ArgumentError('missing CLIENT_ID');
-    }
     var options = {
       'client_id': clientId,
       'scope': scopes,
@@ -34,15 +31,15 @@ class GapiAuth {
       'approval_prompt': approvalPrompt
     };
     var jsOptions = JsObject.jsify(options);
-    void _onResult(authResult) {
+    void _onResult(JsObject? authResult) {
       if (authResult != null) {
         //print(jsObjectAsCollection(authResult));
-        final e = gapiResponseParseException(authResult as JsObject);
+        final e = gapiResponseParseException(authResult);
         if (e != null) {
           completer.completeError(e);
           return;
         }
-        final oauthToken = authResult['access_token'] as String;
+        final oauthToken = authResult['access_token'] as String?;
         print('authed $oauthToken');
         completer.complete(oauthToken);
       } else {
@@ -50,7 +47,7 @@ class GapiAuth {
       }
     }
 
-    jsObject.callMethod('authorize', [jsOptions, _onResult]);
+    jsObject!.callMethod('authorize', [jsOptions, _onResult]);
 
     return completer.future;
   }

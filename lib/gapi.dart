@@ -6,12 +6,12 @@ import 'dart:js';
 import 'package:tekartik_browser_utils/js_utils.dart';
 
 class Gapi {
-  JsObject jsObject;
+  JsObject? jsObject;
   Gapi(this.jsObject);
 
-  JsObject get jsGapi => jsObject;
+  JsObject? get jsGapi => jsObject;
 
-  dynamic operator [](String key) => jsObject[key];
+  dynamic operator [](String key) => jsObject![key];
 
   Future load(String api) {
     final completer = Completer();
@@ -21,7 +21,7 @@ class Gapi {
 
     var jsOptions = JsObject.jsify({'callback': _onLoaded});
     final args = [api, jsOptions];
-    jsObject.callMethod('load', args);
+    jsObject!.callMethod('load', args);
 
     return completer.future;
   }
@@ -37,19 +37,18 @@ class GapiException implements Exception {
   String toString() => 'GapiException: $message';
 }
 
-Exception gapiResponseParseException(JsObject jsData) {
-  if (jsData != null) {
-    var jsError = jsData['error'];
-    if (jsError != null) {
-      if ((jsError is JsObject) && (!(jsError is JsArray))) {
-        var code = jsError['code'] as int;
-        final message = jsError['message'] as String;
-        return GapiException('$code - $message');
-      } else {
-        return const GapiException('error');
-      }
+Exception? gapiResponseParseException(JsObject jsData) {
+  var jsError = jsData['error'];
+  if (jsError != null) {
+    if ((jsError is JsObject) && (!(jsError is JsArray))) {
+      var code = jsError['code'] as int?;
+      final message = jsError['message'] as String?;
+      return GapiException('$code - $message');
+    } else {
+      return const GapiException('error');
     }
   }
+
   return null;
 }
 
@@ -57,7 +56,7 @@ Exception gapiResponseParseException(JsObject jsData) {
 
 bool _debug = false;
 bool _checkGapiProperties([List<String> properties = const []]) {
-  final jsGapi = context['gapi'] as JsObject;
+  final jsGapi = context['gapi'] as JsObject?;
   if (_debug) {
     print('_check gapi: ${jsGapi != null}');
   }
@@ -105,7 +104,7 @@ Future _waitForGapiClientLoaded() async {
   await _waitForGapiClientLoaded();
 }
 
-JsObject get _gapiJsObject => context['gapi'] as JsObject;
+JsObject? get _gapiJsObject => context['gapi'] as JsObject?;
 
 ///
 /// if you want the bare feature
