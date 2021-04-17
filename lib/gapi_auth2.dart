@@ -80,7 +80,7 @@ class GoogleAuth {
   GoogleAuth._(this._jsObject);
 
   GoogleAuth() {
-    final auth2 = context['gapi']['auth2'] as JsObject;
+    final auth2 = (context['gapi'] as JsObject)['auth2'] as JsObject;
     _jsObject = auth2.callMethod('getAuthInstance') as JsObject;
     //print(jsObjectToDebugString(_jsObject));
   }
@@ -156,7 +156,7 @@ class GapiAuth2 {
   JsObject _jsObject;
 
   GapiAuth2() {
-    _jsObject = context['gapi']['auth2'] as JsObject;
+    _jsObject = (context['gapi'] as JsObject)['auth2'] as JsObject;
   }
 
   GapiAuth2._(this._jsObject);

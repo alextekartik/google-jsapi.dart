@@ -14,7 +14,7 @@ class GapiAuth {
   static const APPROVAL_PROMPT_FORCE = approvalPromptForce;
 
   String getAccessToken() {
-    var jsToken = jsObject.callMethod('getToken');
+    var jsToken = jsObject.callMethod('getToken') as JsObject;
     return jsToken['access_token'] as String;
   }
 
@@ -42,7 +42,7 @@ class GapiAuth {
           completer.completeError(e);
           return;
         }
-        final oauthToken = authResult['access_token'] as String;
+        final oauthToken = (authResult as JsObject)['access_token'] as String;
         print('authed $oauthToken');
         completer.complete(oauthToken);
       } else {

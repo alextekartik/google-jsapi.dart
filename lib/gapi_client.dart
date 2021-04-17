@@ -8,7 +8,7 @@ import 'gapi.dart';
 class GapiClient {
   JsObject _jsObject;
 
-  GapiClient() : this._(context['gapi']['client'] as JsObject);
+  GapiClient() : this._((context['gapi'] as JsObject)['client'] as JsObject);
 
   GapiClient._(this._jsObject);
 
