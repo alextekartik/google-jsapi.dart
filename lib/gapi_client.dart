@@ -6,9 +6,9 @@ import 'dart:js';
 import 'gapi.dart';
 
 class GapiClient {
-  JsObject _jsObject;
+  JsObject? _jsObject;
 
-  GapiClient() : this._((context['gapi'] as JsObject)['client'] as JsObject);
+  GapiClient() : this._((context['gapi'] as JsObject)['client'] as JsObject?);
 
   GapiClient._(this._jsObject);
 
@@ -26,7 +26,7 @@ class GapiClient {
     }
 
     final args = [api, version, _onLoaded];
-    _jsObject.callMethod('load', args);
+    _jsObject!.callMethod('load', args);
 
     return completer.future;
   }
@@ -39,12 +39,12 @@ class GapiClient {
   */
 }
 
-Future<GapiClient> loadGapiClient([Gapi gapi]) async {
+Future<GapiClient> loadGapiClient([Gapi? gapi]) async {
   gapi ??= await loadGapiPlatform();
 
   // need loaded?
   if (gapi['client'] == null) {
     await gapi.load('client');
   }
-  return GapiClient._(gapi['client'] as JsObject);
+  return GapiClient._(gapi['client'] as JsObject?);
 }

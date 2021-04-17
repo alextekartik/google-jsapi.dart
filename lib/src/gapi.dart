@@ -3,26 +3,26 @@ part of tekartik_google_jsapi;
 // bool _googleJsClientLoaded;
 
 class Gapi {
-  JsObject jsObject;
+  JsObject? jsObject;
   Gapi(this.jsObject);
 
-  JsObject get jsGapi => jsObject;
+  JsObject? get jsGapi => jsObject;
 
-  GapiAuth _auth;
-  GapiClient _client;
+  GapiAuth? _auth;
+  GapiClient? _client;
 
   // use load auth
   @deprecated
-  GapiAuth get auth {
-    _auth ??= GapiAuth(jsObject['auth'] as JsObject);
+  GapiAuth? get auth {
+    _auth ??= GapiAuth(jsObject!['auth'] as JsObject?);
     return _auth;
   }
 
-  dynamic operator [](String key) => jsObject[key];
+  dynamic operator [](String key) => jsObject![key];
 
   // use load client
-  GapiClient get client {
-    _client ??= GapiClient(jsObject['client'] as JsObject);
+  GapiClient? get client {
+    _client ??= GapiClient(jsObject!['client'] as JsObject?);
     return _client;
   }
 
@@ -34,7 +34,7 @@ class Gapi {
 
     var jsOptions = JsObject.jsify({'callback': _onLoaded});
     final args = [api, jsOptions];
-    jsObject.callMethod('load', args);
+    jsObject!.callMethod('load', args);
 
     return completer.future;
   }
@@ -50,17 +50,15 @@ class GapiException implements Exception {
   String toString() => 'GapiException: $message';
 }
 
-Exception gapiResponseParseException(JsObject jsData) {
-  if (jsData != null) {
-    var jsError = jsData['error'];
-    if (jsError != null) {
-      if ((jsError is JsObject) && (!(jsError is JsArray))) {
-        final code = jsError['code'] as int;
-        final message = jsError['message'] as String;
-        return GapiException('$code - $message');
-      } else {
-        return const GapiException('error');
-      }
+Exception? gapiResponseParseException(JsObject jsData) {
+  var jsError = jsData['error'];
+  if (jsError != null) {
+    if ((jsError is JsObject) && (!(jsError is JsArray))) {
+      final code = jsError['code'] as int?;
+      final message = jsError['message'] as String?;
+      return GapiException('$code - $message');
+    } else {
+      return const GapiException('error');
     }
   }
   return null;

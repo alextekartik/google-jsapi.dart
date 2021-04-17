@@ -14,7 +14,7 @@ part 'src/gapi.dart';
 
 bool _debug = false;
 bool _checkGapiProperties([List<String> properties = const []]) {
-  final jsGapi = context['gapi'] as JsObject;
+  final jsGapi = context['gapi'] as JsObject?;
   if (_debug) {
     print('_check gapi: ${jsGapi != null}');
   }
@@ -68,11 +68,11 @@ Future _waitForGapiClientLoaded() async {
 Future<Gapi> loadGapiPlatform() async {
   // check if loaded first
   if (_checkPlatformLoaded()) {
-    return Gapi(context['gapi'] as JsObject);
+    return Gapi(context['gapi'] as JsObject?);
   }
   await loadJavascriptScript('//apis.google.com/js/platform.js');
   await _waitForGapiPlatformLoaded();
-  return Gapi(context['gapi'] as JsObject);
+  return Gapi(context['gapi'] as JsObject?);
 }
 
 ///
@@ -81,11 +81,11 @@ Future<Gapi> loadGapiPlatform() async {
 Future<Gapi> loadGapiClientPlatform() async {
   // check if loaded first
   if (_checkClientLoaded()) {
-    return Gapi(context['gapi'] as JsObject);
+    return Gapi(context['gapi'] as JsObject?);
   }
   await loadJavascriptScript('//apis.google.com/js/client:platform.js');
   await _waitForGapiClientLoaded();
-  return Gapi(context['gapi'] as JsObject);
+  return Gapi(context['gapi'] as JsObject?);
 }
 
 // compatibility - load client

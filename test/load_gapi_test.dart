@@ -7,7 +7,7 @@ import 'package:tekartik_google_jsapi/gapi.dart';
 
 void main() {
   group('gapi', () {
-    Gapi gapi;
+    late Gapi gapi;
     setUp(() {
       return loadGapi().then((Gapi _gapi) {
         gapi = _gapi;

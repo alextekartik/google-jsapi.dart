@@ -4,19 +4,19 @@ import 'dart:async';
 import 'dart:js';
 
 class Promise {
-  final JsObject _jsObject;
+  final JsObject? _jsObject;
   Promise(this._jsObject);
 
   Future get asFuture {
     final completer = Completer();
-    _jsObject.callMethod('then', [
+    _jsObject!.callMethod('then', [
       // onFullfilled
       (value) {
         print('onFullfilled');
         completer.complete(value);
       },
       // onRejected
-      (reason) {
+      (Object reason) {
         print('reason');
         completer.completeError(reason);
       }

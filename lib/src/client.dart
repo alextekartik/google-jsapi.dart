@@ -1,7 +1,7 @@
 part of tekartik_google_jsapi;
 
 class GapiClient {
-  JsObject jsObject;
+  JsObject? jsObject;
   GapiClient(this.jsObject);
 
   Future load(String api, String version) {
@@ -18,7 +18,7 @@ class GapiClient {
     }
 
     final args = [api, version, _onLoaded];
-    jsObject.callMethod('load', args);
+    jsObject!.callMethod('load', args);
 
     return completer.future;
   }
