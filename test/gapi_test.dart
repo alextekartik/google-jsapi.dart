@@ -4,12 +4,12 @@ library gapi_test;
 
 import 'dart:async';
 
-import 'package:test/test.dart';
-
 // ignore: deprecated_member_use_from_same_package
 import 'package:tekartik_google_jsapi/google_jsapi.dart';
+import 'package:test/test.dart';
 
 late Gapi gapi;
+
 Future<Gapi> testLoadGapi() {
   return loadGapi().then((Gapi _gapi) {
     gapi = _gapi;
