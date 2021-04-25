@@ -1,9 +1,9 @@
 @TestOn('browser')
 library auth_test;
 
+import 'package:tekartik_google_jsapi/gapi_auth.dart';
 import 'package:test/test.dart';
 
-import 'package:tekartik_google_jsapi/gapi_auth.dart';
 import 'test_config.dart';
 
 void main() {
