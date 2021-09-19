@@ -6,10 +6,10 @@ class GapiAuth {
 
   static const scopeEmail = 'email';
   static const approvalPromptForce = 'force';
-  @deprecated
+  @Deprecated('Use scopeEmail')
   // ignore: constant_identifier_names
   static const SCOPE_EMAIL = scopeEmail;
-  @deprecated
+  @Deprecated('Use approvalPromptForce')
   // ignore: constant_identifier_names
   static const APPROVAL_PROMPT_FORCE = approvalPromptForce;
 

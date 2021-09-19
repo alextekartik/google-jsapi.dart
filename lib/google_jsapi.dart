@@ -1,4 +1,4 @@
-@deprecated
+@Deprecated('No longer supported')
 library tekartik_google_jsapi;
 
 import 'dart:async';

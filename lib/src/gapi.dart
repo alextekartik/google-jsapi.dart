@@ -12,7 +12,7 @@ class Gapi {
   GapiClient? _client;
 
   // use load auth
-  @deprecated
+  @Deprecated('User load.auth')
   GapiAuth? get auth {
     _auth ??= GapiAuth(jsObject!['auth'] as JsObject?);
     return _auth;
@@ -53,7 +53,7 @@ class GapiException implements Exception {
 Exception? gapiResponseParseException(JsObject jsData) {
   var jsError = jsData['error'];
   if (jsError != null) {
-    if ((jsError is JsObject) && (!(jsError is JsArray))) {
+    if ((jsError is JsObject) && (jsError is! JsArray)) {
       final code = jsError['code'] as int?;
       final message = jsError['message'] as String?;
       return GapiException('$code - $message');
