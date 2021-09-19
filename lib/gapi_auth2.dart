@@ -114,7 +114,7 @@ class GoogleAuth {
   }
 
   Future signIn([GapiAuth2SignInParams? params]) async {
-    var _params = params == null ? null : params.jsify();
+    var _params = params?.jsify();
     await Promise(_jsObject!.callMethod('signIn', [_params]) as JsObject?)
         .asFuture;
   }

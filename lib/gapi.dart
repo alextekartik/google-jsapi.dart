@@ -40,7 +40,7 @@ class GapiException implements Exception {
 Exception? gapiResponseParseException(JsObject jsData) {
   var jsError = jsData['error'];
   if (jsError != null) {
-    if ((jsError is JsObject) && (!(jsError is JsArray))) {
+    if ((jsError is JsObject) && (jsError is! JsArray)) {
       var code = jsError['code'] as int?;
       final message = jsError['message'] as String?;
       return GapiException('$code - $message');
