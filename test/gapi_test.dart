@@ -11,8 +11,8 @@ import 'package:test/test.dart';
 late Gapi gapi;
 
 Future<Gapi> testLoadGapi() {
-  return loadGapi().then((Gapi _gapi) {
-    gapi = _gapi;
+  return loadGapi().then((loadedGapi) {
+    gapi = loadedGapi;
     return gapi;
   });
 }

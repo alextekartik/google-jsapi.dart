@@ -52,9 +52,9 @@ class GoogleUser {
   bool? get isSignedIn => _jsObject.callMethod('isSignedIn') as bool?;
 
   GoogleAuthResponse getAuthResponse() {
-    var _jsAuthResponse = _jsObject.callMethod('getAuthResponse') as JsObject?;
+    var jsAuthResponse = _jsObject.callMethod('getAuthResponse') as JsObject?;
     // devPrint(jsObjectKeys(_jsAuthResponse));
-    return GoogleAuthResponse._(_jsAuthResponse);
+    return GoogleAuthResponse._(jsAuthResponse);
   }
 
   void disconnect() {
@@ -112,8 +112,8 @@ class GoogleAuth {
   }
 
   Future signIn([GapiAuth2SignInParams? params]) async {
-    var _params = params?.jsify();
-    await Promise(_jsObject!.callMethod('signIn', [_params]) as JsObject?)
+    var jsParams = params?.jsify();
+    await Promise(_jsObject!.callMethod('signIn', [jsParams]) as JsObject?)
         .asFuture;
   }
 
