@@ -8,8 +8,8 @@ void main() {
   group('gapi', () {
     late Gapi gapi;
     setUp(() {
-      return loadGapi().then((Gapi _gapi) {
-        gapi = _gapi;
+      return loadGapi().then((Gapi loadedGapi) {
+        gapi = loadedGapi;
       });
     });
 
