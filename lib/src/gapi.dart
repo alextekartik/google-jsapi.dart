@@ -28,11 +28,11 @@ class Gapi {
 
   Future load(String api) {
     final completer = Completer();
-    void _onLoaded([jsData]) {
+    void onLoaded([jsData]) {
       completer.complete();
     }
 
-    var jsOptions = JsObject.jsify({'callback': _onLoaded});
+    var jsOptions = JsObject.jsify({'callback': onLoaded});
     final args = [api, jsOptions];
     jsObject!.callMethod('load', args);
 

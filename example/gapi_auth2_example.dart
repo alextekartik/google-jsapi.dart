@@ -40,28 +40,28 @@ class App {
     final autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
     autoSignInCheckbox.checked = autoSignIn;
 
-    void _insertLine(String line) {
+    void insertLine(String line) {
       final sb = StringBuffer();
       sb.writeln(line);
       sb.write(signResult!.text);
       signResult.text = sb.toString();
     }
 
-    Future _signIn() async {
+    Future signIn() async {
       await gapiAuth2.getAuthInstance().signIn();
-      _insertLine('Signed in');
+      insertLine('Signed in');
       _showAuthInfo();
     }
 
     if (autoSignIn) {
-      _signIn();
+      signIn();
     }
     signInForm
         .querySelector('button.app-signin')!
         .onClick
         .listen((Event event) {
       event.preventDefault();
-      _signIn();
+      signIn();
     });
     signInForm
         .querySelector('button.app-signin-select')!
@@ -71,7 +71,7 @@ class App {
       await gapiAuth2
           .getAuthInstance()
           .signIn(GapiAuth2SignInParams()..prompt = 'select_account');
-      _insertLine('Signed in');
+      insertLine('Signed in');
       _showAuthInfo();
     });
 
@@ -81,7 +81,7 @@ class App {
         .listen((Event event) async {
       event.preventDefault();
       await gapiAuth2.getAuthInstance().signOut();
-      _insertLine('Signed out');
+      insertLine('Signed out');
       _showAuthInfo();
     });
 
@@ -91,7 +91,7 @@ class App {
         .listen((Event event) async {
       event.preventDefault();
       gapiAuth2.getAuthInstance().disconnect();
-      _insertLine('Disconnected');
+      insertLine('Disconnected');
       _showAuthInfo();
     });
 
@@ -105,7 +105,7 @@ class App {
         user.disconnect();
       }
       await gapiAuth2.getAuthInstance().signOut();
-      _insertLine('User disconnected');
+      insertLine('User disconnected');
       _showAuthInfo();
     });
 
@@ -163,7 +163,7 @@ class App {
     var autoInit = storageGet(gapiAutoInitKey) == true.toString();
     autoInitCheckbox.checked = autoInit;
 
-    void _init() {
+    void init() {
       clientId = clientIdInput.value;
       if (clientId!.isEmpty) {
         authorizeResult!.innerHtml = 'Missing CLIENT ID';
@@ -194,7 +194,7 @@ class App {
 
     authorizeButton.onClick.listen((Event event) {
       event.preventDefault();
-      _init();
+      init();
     });
 
     userIdInput.onChange.listen((_) {
@@ -215,7 +215,7 @@ class App {
     });
 
     if (autoInit) {
-      _init();
+      init();
     }
   }
 
