@@ -53,7 +53,7 @@ void authMain() {
   final autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
   autoSignInCheckbox.checked = autoSignIn;
 
-  void _signIn() {
+  void signIn() {
     final clientId = clientIdInput.value!;
     if (clientId.isEmpty) {
       authorizeResult!.innerHtml = 'Missing CLIENT ID';
@@ -74,7 +74,7 @@ void authMain() {
 
   authorizeButton.onClick.listen((Event event) {
     event.preventDefault();
-    _signIn();
+    signIn();
   });
 
   approvalPromptCheckbox.onChange.listen((_) {
@@ -89,7 +89,7 @@ void authMain() {
   });
 
   if (autoSignIn) {
-    _signIn();
+    signIn();
   }
 }
 

@@ -37,7 +37,7 @@ class GapiAuth {
       'approval_prompt': approvalPrompt
     };
     var jsOptions = JsObject.jsify(options);
-    void _onResult(JsObject? authResult) {
+    void onResult(JsObject? authResult) {
       if (authResult != null) {
         //print(jsObjectAsCollection(authResult));
         final e = gapiResponseParseException(authResult);
@@ -53,7 +53,7 @@ class GapiAuth {
       }
     }
 
-    jsObject!.callMethod('authorize', [jsOptions, _onResult]);
+    jsObject!.callMethod('authorize', [jsOptions, onResult]);
 
     return completer.future;
   }
