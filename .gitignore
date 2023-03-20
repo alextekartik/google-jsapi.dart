@@ -12,3 +12,6 @@ build
 .idea/
 .vscode/
 *.iml
+# local files
+local.*
+.local/

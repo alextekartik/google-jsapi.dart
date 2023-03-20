@@ -5,8 +5,8 @@ class GapiClient {
   GapiClient(this.jsObject);
 
   Future load(String api, String version) {
-    final completer = Completer();
-    void onLoaded([jsData]) {
+    final completer = Completer<dynamic>();
+    void onLoaded([dynamic jsData]) {
       if (jsData != null) {
         final e = gapiResponseParseException(jsData as JsObject);
         if (e != null) {

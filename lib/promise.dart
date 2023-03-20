@@ -8,10 +8,10 @@ class Promise {
   Promise(this._jsObject);
 
   Future get asFuture {
-    final completer = Completer();
+    final completer = Completer<dynamic>();
     _jsObject!.callMethod('then', [
       // onFullfilled
-      (value) {
+      (dynamic value) {
         print('onFullfilled');
         completer.complete(value);
       },

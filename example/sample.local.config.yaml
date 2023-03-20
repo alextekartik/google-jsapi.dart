@@ -1,0 +1,6 @@
+# Copy this file as "local.config.yaml" in the same folder (.gitignored)
+
+# The Client ID obtained from the Google Cloud Console.
+# Credentials/OAuth 2.0 Client IDs
+clientId: [ENTER_YOUR_CLIENT_ID.apps.googleusercontent.com]
+clientSecret: [ENTER_YOUR_CLIENT_SECRET]

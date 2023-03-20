@@ -27,7 +27,7 @@ class Gapi {
   }
 
   Future load(String api) {
-    final completer = Completer();
+    final completer = Completer<dynamic>();
     void onLoaded([jsData]) {
       completer.complete();
     }

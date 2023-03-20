@@ -39,7 +39,7 @@ void gapiMain() {
     });
 
     test('load bad client', () {
-      return gapi.client!.load('drive', 'v3').catchError((e) {
+      return gapi.client!.load('drive', 'v3').catchError((Object e) {
         expect(e is GapiException, true);
       }); // v3 does not exist yet
     });

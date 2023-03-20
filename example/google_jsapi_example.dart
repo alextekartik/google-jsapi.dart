@@ -4,6 +4,8 @@ import 'dart:html';
 import 'package:tekartik_google_jsapi/gapi.dart';
 import 'package:tekartik_google_jsapi/gapi_auth.dart';
 
+import 'test_setup.dart';
+
 Gapi? gapi;
 late GapiAuth gapiAuth;
 Storage storage = window.localStorage;
@@ -28,7 +30,7 @@ String authApprovalPromptKey = 'auth_approval_prompt'; // boolean
 String clientIdKey = 'client_id';
 String scopesKey = 'scopes';
 
-void authMain() {
+Future<void> authMain() async {
   final authForm = querySelector('form.app-auth')!;
   authForm.classes.remove('hidden');
   final authorizeButton = authForm.querySelector('button.app-authorize')!;
@@ -42,7 +44,8 @@ void authMain() {
   final approvalPromptCheckbox =
       authForm.querySelector('.app-approval-prompt') as CheckboxInputElement;
 
-  clientIdInput.value = storageGet(clientIdKey);
+  var appOptions = await setup();
+  clientIdInput.value = storageGet(clientIdKey) ?? appOptions?.clientId;
   scopesInput.value = storageGet(scopesKey);
 
   var approvalPrompt = storageGet(authApprovalPromptKey);
@@ -105,7 +108,7 @@ Future _loadGapi() async {
     throw e;
   });
   gapiAuth = await loadGapiAuth(gapi);
-  authMain();
+  await authMain();
 }
 
 void main() {

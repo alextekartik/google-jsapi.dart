@@ -66,7 +66,7 @@ class GoogleUser {
 class GapiAuth2SignInParams {
   String? prompt; // none,login,consent,select_account
   JsObject jsify() {
-    final map = {};
+    final map = <String, Object?>{};
     map['prompt'] = prompt;
     return JsObject.jsify(map);
   }
@@ -97,9 +97,9 @@ class GoogleAuth {
   }
 
   Stream<bool?> get onSignedIn {
-    final ctlr = StreamController();
+    final ctlr = StreamController<dynamic>();
     void signInChange(bool val) {
-      ctlr.add(bool);
+      ctlr.add(val);
     }
 
     (_jsObject!['isSignedIn'] as JsObject).callMethod('listen', [signInChange]);
@@ -134,7 +134,7 @@ class GapiAuth2InitParams {
   }
 
   Map toJson() {
-    final map = {};
+    final map = <String, Object?>{};
     map['client_id'] = clientId;
     map['scope'] = scopes.join(' ');
     /*
