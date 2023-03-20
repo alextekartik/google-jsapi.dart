@@ -45,7 +45,7 @@ Future _waitForGapiPlatformLoaded() async {
     return;
   }
   // wait 1ms..and repeat
-  await Future.delayed(const Duration(milliseconds: 1));
+  await Future<void>.delayed(const Duration(milliseconds: 1));
   await _waitForGapiPlatformLoaded();
 }
 
@@ -58,7 +58,7 @@ Future _waitForGapiClientLoaded() async {
     return;
   }
   // wait 1ms..and repeat
-  await Future.delayed(const Duration(milliseconds: 1));
+  await Future<void>.delayed(const Duration(milliseconds: 1));
   await _waitForGapiClientLoaded();
 }
 

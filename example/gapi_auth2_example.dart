@@ -3,6 +3,8 @@ library google_jsapi_example;
 import 'dart:html';
 import 'package:tekartik_google_jsapi/gapi_auth2.dart';
 
+import 'test_setup.dart';
+
 late GapiAuth2 gapiAuth2;
 
 Storage storage = window.localStorage;
@@ -131,7 +133,8 @@ class App {
     authorizeResult!.text = sb.toString();
   }
 
-  void authMain() {
+  Future<void> authMain() async {
+    var defaultOptions = await setup();
     final authForm = querySelector('form.app-auth')!;
     authForm.classes.remove('hidden');
     final authorizeButton = authForm.querySelector('button.app-authorize')!;
@@ -145,8 +148,7 @@ class App {
     final autoInitCheckbox =
         authForm.querySelector('.app-autoinit') as CheckboxInputElement;
 
-    String? clientId =
-        storageGet(clientIdKey) ?? '124267391961.apps.googleusercontent.com';
+    var clientId = storageGet(clientIdKey) ?? defaultOptions?.clientId;
 
     var userId = storageGet(userIdKey);
     clientIdInput.value = clientId;
@@ -233,7 +235,7 @@ class App {
       rethrow;
     }
 
-    authMain();
+    await authMain();
   }
 }
 

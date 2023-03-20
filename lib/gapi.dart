@@ -14,7 +14,7 @@ class Gapi {
   dynamic operator [](String key) => jsObject![key];
 
   Future load(String api) {
-    final completer = Completer();
+    final completer = Completer<void>();
     void onLoaded([jsData]) {
       completer.complete();
     }
@@ -87,7 +87,7 @@ Future _waitForGapiPlatformLoaded() async {
     return;
   }
   // wait 1ms..and repeat
-  await Future.delayed(const Duration(milliseconds: 1));
+  await Future<void>.delayed(const Duration(milliseconds: 1));
   await _waitForGapiPlatformLoaded();
 }
 
@@ -100,7 +100,7 @@ Future _waitForGapiClientLoaded() async {
     return;
   }
   // wait 1ms..and repeat
-  await Future.delayed(const Duration(milliseconds: 1));
+  await Future<void>.delayed(const Duration(milliseconds: 1));
   await _waitForGapiClientLoaded();
 }
 
