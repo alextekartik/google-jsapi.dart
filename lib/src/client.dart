@@ -1,4 +1,4 @@
-part of tekartik_google_jsapi;
+part of '../google_jsapi.dart';
 
 class GapiClient {
   JsObject? jsObject;
