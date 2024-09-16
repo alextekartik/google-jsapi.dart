@@ -1,4 +1,9 @@
-part of '../google_jsapi.dart';
+import 'dart:async';
+import 'dart:js';
+
+import 'package:tekartik_common_utils/common_utils_import.dart';
+
+import 'gapi.dart';
 
 class GapiAuth {
   JsObject? jsObject;

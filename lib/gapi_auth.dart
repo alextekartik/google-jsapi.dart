@@ -2,7 +2,7 @@ library tekartik_google_jsapi.gapi_auth;
 
 import 'dart:js';
 
-import 'package:tekartik_browser_utils/browser_utils_import.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 
 import 'gapi.dart';
 
