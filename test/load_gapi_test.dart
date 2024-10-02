@@ -1,5 +1,5 @@
 @TestOn('browser')
-library load_gapi_test;
+library;
 
 import 'package:tekartik_google_jsapi/gapi.dart';
 import 'package:test/test.dart';

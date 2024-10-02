@@ -1,4 +1,4 @@
-library all_test_browser;
+library;
 
 //import 'package:unittest/html_config.dart';
 //import 'package:test/test.dart';

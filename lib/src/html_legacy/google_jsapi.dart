@@ -1,5 +1,5 @@
 @Deprecated('No longer supported')
-library tekartik_google_jsapi;
+library;
 
 import 'dart:async';
 import 'dart:js';

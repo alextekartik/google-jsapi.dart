@@ -1,4 +1,4 @@
-library test_config;
+library;
 
 // The Client ID obtained from the Google Cloud Console.
 // The provider one does not allow any API

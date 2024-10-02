@@ -1,4 +1,4 @@
-library tekartik_google_auth.gapi_auth2;
+library;
 
 import 'dart:js';
 

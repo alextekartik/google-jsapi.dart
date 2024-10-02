@@ -1,4 +1,4 @@
-library tekartik_google_auth;
+library;
 
 import 'dart:async';
 import 'dart:js';

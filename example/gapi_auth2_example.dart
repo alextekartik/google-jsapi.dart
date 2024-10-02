@@ -1,4 +1,4 @@
-library google_jsapi_example;
+library;
 
 import 'dart:html';
 import 'package:tekartik_google_jsapi/gapi_auth2.dart';

@@ -1,5 +1,5 @@
 @TestOn('browser')
-library auth_test;
+library;
 
 import 'dart:async';
 import 'dart:js';

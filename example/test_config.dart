@@ -1,4 +1,4 @@
-library test_config;
+library;
 
 class AppOptions {
   // The Client ID obtained from the Google Cloud Console.
