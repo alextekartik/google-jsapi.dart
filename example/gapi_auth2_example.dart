@@ -1,24 +1,24 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 library;
 
-import 'dart:html';
+import 'package:tekartik_browser_utils/storage_utils.dart';
 import 'package:tekartik_google_jsapi/gapi_auth2.dart';
+import 'package:web/web.dart' as web;
 
 import 'test_setup.dart';
 
 late GapiAuth2 gapiAuth2;
 
-Storage storage = window.localStorage;
-
 String storageKeyPref = 'com.tekartik.gapi_auth2_example';
-String? storageGet(String key) {
-  return storage['$storageKeyPref.$key'];
-}
+String _storageKey(String key) => '$storageKeyPref.$key';
+String? storageGet(String key) => webLocalStorageGet(_storageKey(key));
 
 void storageSet(String key, String? value) {
   if (value == null) {
-    storage.remove('$storageKeyPref.$key');
+    webLocalStorageRemove(_storageKey(key));
   } else {
-    storage['$storageKeyPref.$key'] = value;
+    webLocalStorageSet(_storageKey(key), value);
   }
 }
 
@@ -32,12 +32,12 @@ String scopesKey = 'scopes';
 
 class App {
   void loginMain() {
-    final signInForm = querySelector('div.app-sign')!;
-    signInForm.classes.remove('hidden');
-    final signResult = signInForm.querySelector('.app-sign-result');
+    final signInForm = web.document.querySelector('div.app-sign')!;
+    signInForm.classList.remove('hidden');
+    final signResult = signInForm.querySelector('.app-sign-result')!;
 
     var autoSignInCheckbox =
-        signInForm.querySelector('.app-autosignin') as CheckboxInputElement;
+        signInForm.querySelector('.app-autosignin') as web.HTMLInputElement;
 
     final autoSignIn = storageGet(gapiAutoSignInKey) == true.toString();
     autoSignInCheckbox.checked = autoSignIn;
@@ -45,7 +45,7 @@ class App {
     void insertLine(String line) {
       final sb = StringBuffer();
       sb.writeln(line);
-      sb.write(signResult!.text);
+      sb.write(signResult.textContent);
       signResult.text = sb.toString();
     }
 
@@ -61,14 +61,14 @@ class App {
     signInForm
         .querySelector('button.app-signin')!
         .onClick
-        .listen((Event event) {
+        .listen((web.Event event) {
       event.preventDefault();
       signIn();
     });
     signInForm
         .querySelector('button.app-signin-select')!
         .onClick
-        .listen((Event event) async {
+        .listen((web.Event event) async {
       event.preventDefault();
       await gapiAuth2
           .getAuthInstance()
@@ -80,7 +80,7 @@ class App {
     signInForm
         .querySelector('button.app-signout')!
         .onClick
-        .listen((Event event) async {
+        .listen((web.Event event) async {
       event.preventDefault();
       await gapiAuth2.getAuthInstance().signOut();
       insertLine('Signed out');
@@ -90,7 +90,7 @@ class App {
     signInForm
         .querySelector('button.app-disconnect')!
         .onClick
-        .listen((Event event) async {
+        .listen((web.Event event) async {
       event.preventDefault();
       gapiAuth2.getAuthInstance().disconnect();
       insertLine('Disconnected');
@@ -100,7 +100,7 @@ class App {
     signInForm
         .querySelector('button.app-user-disconnect')!
         .onClick
-        .listen((Event event) async {
+        .listen((web.Event event) async {
       event.preventDefault();
       final user = gapiAuth2.getAuthInstance().getCurrentUser();
       if (user != null) {
@@ -112,12 +112,11 @@ class App {
     });
 
     autoSignInCheckbox.onChange.listen((_) {
-      storageSet(
-          gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
+      storageSet(gapiAutoSignInKey, (autoSignInCheckbox.checked).toString());
     });
   }
 
-  Element? authorizeResult;
+  late web.Element authorizeResult;
 
   void _showAuthInfo() {
     final sb = StringBuffer();
@@ -130,30 +129,30 @@ class App {
       sb.writeln('email: ${user.basicProfile.email}');
     }
 
-    authorizeResult!.text = sb.toString();
+    authorizeResult.text = sb.toString();
   }
 
   Future<void> authMain() async {
     var defaultOptions = await setup();
-    final authForm = querySelector('form.app-auth')!;
-    authForm.classes.remove('hidden');
+    final authForm = web.document.querySelector('form.app-auth')!;
+    authForm.classList.remove('hidden');
     final authorizeButton = authForm.querySelector('button.app-authorize')!;
-    final clientIdInput =
-        authForm.querySelector('input#appInputClientId') as InputElement;
+    final clientIdInput = authForm.querySelector('input#appInputClientId')
+        as web.HTMLInputElement;
     final userIdInput =
-        authForm.querySelector('input#appUserId') as InputElement;
+        authForm.querySelector('input#appUserId') as web.HTMLInputElement;
     final scopesInput =
-        authForm.querySelector('input#appInputScopes') as InputElement;
-    authorizeResult = authForm.querySelector('.app-result');
+        authForm.querySelector('input#appInputScopes') as web.HTMLInputElement;
+    authorizeResult = authForm.querySelector('.app-result')!;
     final autoInitCheckbox =
-        authForm.querySelector('.app-autoinit') as CheckboxInputElement;
+        authForm.querySelector('.app-autoinit') as web.HTMLInputElement;
 
     var clientId = storageGet(clientIdKey) ?? defaultOptions?.clientId;
 
     var userId = storageGet(userIdKey);
-    clientIdInput.value = clientId;
-    userIdInput.value = userId;
-    scopesInput.value = storageGet(scopesKey);
+    clientIdInput.value = clientId ?? '';
+    userIdInput.value = userId ?? '';
+    scopesInput.value = storageGet(scopesKey) ?? '';
 
     /*
   String approvalPrompt = storageGet(authApprovalPromptKey);
@@ -168,12 +167,12 @@ class App {
     void init() {
       clientId = clientIdInput.value;
       if (clientId!.isEmpty) {
-        authorizeResult!.innerHtml = 'Missing CLIENT ID';
+        authorizeResult.textContent = 'Missing CLIENT ID';
         return;
       }
       storageSet(clientIdKey, clientId);
 
-      final scopesString = scopesInput.value!;
+      final scopesString = scopesInput.value;
       storageSet(scopesKey, scopesString);
       final scopes = scopesString.split(',');
 
@@ -194,7 +193,7 @@ class App {
       app.loginMain();
     }
 
-    authorizeButton.onClick.listen((Event event) {
+    authorizeButton.onClick.listen((web.Event event) {
       event.preventDefault();
       init();
     });
@@ -212,8 +211,7 @@ class App {
     });
     */
     autoInitCheckbox.onChange.listen((_) {
-      storageSet(
-          gapiAutoInitKey, (autoInitCheckbox.checked == true).toString());
+      storageSet(gapiAutoInitKey, (autoInitCheckbox.checked).toString());
     });
 
     if (autoInit) {
@@ -221,17 +219,17 @@ class App {
     }
   }
 
-  Element? loadGapiResult;
+  web.Element? loadGapiResult;
 
   Future main() async {
-    final loadGapiElement = querySelector('.app-gapi')!;
+    final loadGapiElement = web.document.querySelector('.app-gapi')!;
     loadGapiResult = loadGapiElement.querySelector('.app-result');
-    loadGapiResult!.innerHtml = 'loading GapiAuth2...';
+    loadGapiResult!.textContent = 'loading GapiAuth2...';
     try {
       gapiAuth2 = await loadGapiAuth2();
-      loadGapiResult!.innerHtml = 'GapiAuth2 loaded';
+      loadGapiResult!.textContent = 'GapiAuth2 loaded';
     } catch (e) {
-      loadGapiResult!.innerHtml = 'load failed $e';
+      loadGapiResult!.textContent = 'load failed $e';
       rethrow;
     }
 

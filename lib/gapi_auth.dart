@@ -1,9 +1,12 @@
+@Deprecated('Do not use')
 library;
 
+// ignore: deprecated_member_use
 import 'dart:js';
 
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
+// ignore: deprecated_member_use_from_same_package
 import 'gapi.dart';
 
 class GapiAuth {

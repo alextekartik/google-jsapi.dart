@@ -1,8 +1,11 @@
+@Deprecated('Do not use')
 library;
 
 import 'dart:async';
+// ignore: deprecated_member_use
 import 'dart:js';
 
+// ignore: deprecated_member_use_from_same_package
 import 'gapi.dart';
 
 class GapiClient {

@@ -1,6 +1,8 @@
 google-jsapi.dart
 ========================
 
+**DEPRECATED** (looking for solutions)
+
 Google jsapi loader for Dart
 
 ### Description

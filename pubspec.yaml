@@ -3,13 +3,13 @@ version: 0.2.1
 description: js api loader
 publish_to: none
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 dependencies:
+  web:
   tekartik_browser_utils:
     git:
       url: https://github.com/tekartik/browser_utils.dart
       ref: dart3a
-    version: '>=0.1.0'
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
@@ -17,15 +17,18 @@ dependencies:
 
 dev_dependencies:
   http:
-  yaml:
-  dev_build:
+  yaml: ">=3.1.2"
+  dev_build: ">=1.1.0+2"
   tekartik_bootstrap:
     git:
       url: https://github.com/tekartik/bootstrap.dart
       ref: dart3a
     version: '>=0.3.0'
-  test: any
-  build_runner:
-  build_web_compilers:
+  test: ">=1.24.0"
+  build_runner: ">=2.4.13"
+  build_web_compilers: ">=4.0.11"
   build_test:
-  process_run: '>=0.10.2'
+  process_run: ">=1.2.1+1"
+
+dependency_overrides:
+  web: ">=1.1.0"

@@ -1,3 +1,4 @@
+@Deprecated('Do not use')
 library;
 
 import 'dart:async';

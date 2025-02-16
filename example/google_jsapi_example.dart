@@ -1,6 +1,10 @@
+// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package
+
 library;
 
 import 'dart:html';
+
+import 'package:tekartik_browser_utils/storage_utils.dart';
 import 'package:tekartik_google_jsapi/gapi.dart';
 import 'package:tekartik_google_jsapi/gapi_auth.dart';
 
@@ -11,15 +15,14 @@ late GapiAuth gapiAuth;
 Storage storage = window.localStorage;
 
 String storageKeyPref = 'com.tekartik.google_jsapi_example';
-String? storageGet(String key) {
-  return storage['$storageKeyPref.$key'];
-}
+String _storageKey(String key) => '$storageKeyPref.$key';
+String? storageGet(String key) => webLocalStorageGet(_storageKey(key));
 
 void storageSet(String key, String? value) {
   if (value == null) {
-    storage.remove('$storageKeyPref.$key');
+    webLocalStorageRemove(_storageKey(key));
   } else {
-    storage['$storageKeyPref.$key'] = value;
+    webLocalStorageSet(_storageKey(key), value);
   }
 }
 
