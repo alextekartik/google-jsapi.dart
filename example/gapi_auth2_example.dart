@@ -46,7 +46,7 @@ class App {
       final sb = StringBuffer();
       sb.writeln(line);
       sb.write(signResult.textContent);
-      signResult.text = sb.toString();
+      signResult.textContent = sb.toString();
     }
 
     Future signIn() async {
@@ -129,7 +129,7 @@ class App {
       sb.writeln('email: ${user.basicProfile.email}');
     }
 
-    authorizeResult.text = sb.toString();
+    authorizeResult.textContent = sb.toString();
   }
 
   Future<void> authMain() async {
