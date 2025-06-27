@@ -28,14 +28,17 @@ class GapiAuth {
   /// approvalPrompt can be 'force'
   ///
   /// @return token
-  Future<String> authorize(String clientId, List<String> scopes,
-      {String? approvalPrompt}) {
+  Future<String> authorize(
+    String clientId,
+    List<String> scopes, {
+    String? approvalPrompt,
+  }) {
     final completer = Completer<String>();
     var options = {
       'client_id': clientId,
       'scope': scopes,
       'immediate': false,
-      'approval_prompt': approvalPrompt
+      'approval_prompt': approvalPrompt,
     };
     var jsOptions = JsObject.jsify(options);
     void onResult(JsObject? authResult) {

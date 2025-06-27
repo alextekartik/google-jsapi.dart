@@ -106,8 +106,11 @@ class GoogleAuth {
     }
 
     (_jsObject!['isSignedIn'] as JsObject).callMethod('listen', [signInChange]);
-    return ctlr.stream.transform(StreamTransformer<dynamic, bool?>.fromHandlers(
-        handleData: (data, sink) => sink.add(parseBool(data))));
+    return ctlr.stream.transform(
+      StreamTransformer<dynamic, bool?>.fromHandlers(
+        handleData: (data, sink) => sink.add(parseBool(data)),
+      ),
+    );
   }
 
   Future signOut() async {
@@ -116,8 +119,9 @@ class GoogleAuth {
 
   Future signIn([GapiAuth2SignInParams? params]) async {
     var jsParams = params?.jsify();
-    await Promise(_jsObject!.callMethod('signIn', [jsParams]) as JsObject?)
-        .asFuture;
+    await Promise(
+      _jsObject!.callMethod('signIn', [jsParams]) as JsObject?,
+    ).asFuture;
   }
 
   void disconnect() {
@@ -164,7 +168,8 @@ class GapiAuth2 {
 
   GoogleAuth init(GapiAuth2InitParams params) {
     return GoogleAuth._(
-        _jsObject!.callMethod('init', [params.jsify()]) as JsObject?);
+      _jsObject!.callMethod('init', [params.jsify()]) as JsObject?,
+    );
   }
 
   GoogleAuth getAuthInstance() {

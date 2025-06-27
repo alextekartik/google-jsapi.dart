@@ -21,7 +21,7 @@ class Promise {
       (Object reason) {
         print('reason');
         completer.completeError(reason);
-      }
+      },
     ]);
     return completer.future;
   }

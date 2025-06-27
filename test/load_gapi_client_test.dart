@@ -15,11 +15,15 @@ void main() {
       final gapiClient = await loadGapiClient();
       expect(gapiClient, isNotNull);
       expect((context['gapi'] as JsObject)['client'], isNotNull);
-      expect(((context['gapi'] as JsObject)['client'] as JsObject)['people'],
-          isNull);
+      expect(
+        ((context['gapi'] as JsObject)['client'] as JsObject)['people'],
+        isNull,
+      );
       await gapiClient.load('people', 'v1');
-      expect(((context['gapi'] as JsObject)['client'] as JsObject)['people'],
-          isNotNull);
+      expect(
+        ((context['gapi'] as JsObject)['client'] as JsObject)['people'],
+        isNotNull,
+      );
 
       var success = false;
       try {

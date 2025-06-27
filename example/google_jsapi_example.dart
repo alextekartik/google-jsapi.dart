@@ -71,9 +71,9 @@ Future<void> authMain() async {
     storageSet(scopesKey, scopesString);
     final scopes = scopesString.split(',');
 
-    gapiAuth
-        .authorize(clientId, scopes, approvalPrompt: approvalPrompt)
-        .then((String oauthToken) {
+    gapiAuth.authorize(clientId, scopes, approvalPrompt: approvalPrompt).then((
+      String oauthToken,
+    ) {
       authorizeResult!.text = "client id '$clientId' authorized for '$scopes'";
     });
   }
@@ -84,14 +84,17 @@ Future<void> authMain() async {
   });
 
   approvalPromptCheckbox.onChange.listen((_) {
-    approvalPrompt =
-        approvalPromptCheckbox.checked! ? GapiAuth.approvalPromptForce : null;
+    approvalPrompt = approvalPromptCheckbox.checked!
+        ? GapiAuth.approvalPromptForce
+        : null;
     storageSet(authApprovalPromptKey, approvalPrompt);
   });
 
   autoSignInCheckbox.onChange.listen((_) {
     storageSet(
-        gapiAutoSignInKey, (autoSignInCheckbox.checked == true).toString());
+      gapiAutoSignInKey,
+      (autoSignInCheckbox.checked == true).toString(),
+    );
   });
 
   if (autoSignIn) {
@@ -103,13 +106,16 @@ Element? loadGapiResult;
 
 Future _loadGapi() async {
   loadGapiResult!.innerHtml = 'loading...';
-  final gapi = await loadGapi().then((gapi) {
-    loadGapiResult!.innerHtml = 'Gapi loaded';
-    return gapi;
-  }, onError: (Object e, st) {
-    loadGapiResult!.innerHtml = 'load failed $e';
-    throw e;
-  });
+  final gapi = await loadGapi().then(
+    (gapi) {
+      loadGapiResult!.innerHtml = 'Gapi loaded';
+      return gapi;
+    },
+    onError: (Object e, st) {
+      loadGapiResult!.innerHtml = 'load failed $e';
+      throw e;
+    },
+  );
   gapiAuth = await loadGapiAuth(gapi);
   await authMain();
 }

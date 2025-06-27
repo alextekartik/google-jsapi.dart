@@ -34,8 +34,8 @@ class GapiClient {
     return completer.future;
   }
 
-// somehow this is not working...
-/*
+  // somehow this is not working...
+  /*
   Future _load(String api, String version) {
     new Promise(_jsObject.callMethod('load', [ api, version])).asFuture;
   }

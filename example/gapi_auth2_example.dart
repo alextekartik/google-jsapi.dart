@@ -58,49 +58,44 @@ class App {
     if (autoSignIn) {
       signIn();
     }
-    signInForm
-        .querySelector('button.app-signin')!
-        .onClick
-        .listen((web.Event event) {
+    signInForm.querySelector('button.app-signin')!.onClick.listen((
+      web.Event event,
+    ) {
       event.preventDefault();
       signIn();
     });
-    signInForm
-        .querySelector('button.app-signin-select')!
-        .onClick
-        .listen((web.Event event) async {
+    signInForm.querySelector('button.app-signin-select')!.onClick.listen((
+      web.Event event,
+    ) async {
       event.preventDefault();
-      await gapiAuth2
-          .getAuthInstance()
-          .signIn(GapiAuth2SignInParams()..prompt = 'select_account');
+      await gapiAuth2.getAuthInstance().signIn(
+        GapiAuth2SignInParams()..prompt = 'select_account',
+      );
       insertLine('Signed in');
       _showAuthInfo();
     });
 
-    signInForm
-        .querySelector('button.app-signout')!
-        .onClick
-        .listen((web.Event event) async {
+    signInForm.querySelector('button.app-signout')!.onClick.listen((
+      web.Event event,
+    ) async {
       event.preventDefault();
       await gapiAuth2.getAuthInstance().signOut();
       insertLine('Signed out');
       _showAuthInfo();
     });
 
-    signInForm
-        .querySelector('button.app-disconnect')!
-        .onClick
-        .listen((web.Event event) async {
+    signInForm.querySelector('button.app-disconnect')!.onClick.listen((
+      web.Event event,
+    ) async {
       event.preventDefault();
       gapiAuth2.getAuthInstance().disconnect();
       insertLine('Disconnected');
       _showAuthInfo();
     });
 
-    signInForm
-        .querySelector('button.app-user-disconnect')!
-        .onClick
-        .listen((web.Event event) async {
+    signInForm.querySelector('button.app-user-disconnect')!.onClick.listen((
+      web.Event event,
+    ) async {
       event.preventDefault();
       final user = gapiAuth2.getAuthInstance().getCurrentUser();
       if (user != null) {
@@ -137,8 +132,9 @@ class App {
     final authForm = web.document.querySelector('form.app-auth')!;
     authForm.classList.remove('hidden');
     final authorizeButton = authForm.querySelector('button.app-authorize')!;
-    final clientIdInput = authForm.querySelector('input#appInputClientId')
-        as web.HTMLInputElement;
+    final clientIdInput =
+        authForm.querySelector('input#appInputClientId')
+            as web.HTMLInputElement;
     final userIdInput =
         authForm.querySelector('input#appUserId') as web.HTMLInputElement;
     final scopesInput =
@@ -183,7 +179,8 @@ class App {
       final auth = gapiAuth2.init(params);
       print('auth: $auth');
       assert(
-          auth.getIsSignedIn() == gapiAuth2.getAuthInstance().getIsSignedIn());
+        auth.getIsSignedIn() == gapiAuth2.getAuthInstance().getIsSignedIn(),
+      );
 
       _showAuthInfo();
       auth.onSignedIn.listen((val) {
