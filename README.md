@@ -22,7 +22,6 @@ Add this dependency to your pubspec.yaml
     tekartik_google_jsapi:
       git: 
         url: https://github.com/alextekartik/google-jsapi.dart.git
-        ref: dart3a
 ```
 
 
