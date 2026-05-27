@@ -54,12 +54,16 @@ Exception? gapiResponseParseException(JsObject jsData) {
 }
 
 //Gapi _gapi;
+void _log(Object? message) {
+  // ignore: avoid_print
+  print(message);
+}
 
 bool _debug = false;
 bool _checkGapiProperties([List<String> properties = const []]) {
   final jsGapi = context['gapi'] as JsObject?;
   if (_debug) {
-    print('_check gapi: ${jsGapi != null}');
+    _log('_check gapi: ${jsGapi != null}');
   }
   if (jsGapi == null) {
     return false;
@@ -67,7 +71,7 @@ bool _checkGapiProperties([List<String> properties = const []]) {
   var ok = true;
   for (final property in properties) {
     if (_debug) {
-      print('_check gapi[$property]: ${jsGapi[property] != null}');
+      _log('_check gapi[$property]: ${jsGapi[property] != null}');
     }
     if (jsGapi[property] == null) {
       ok = false;

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 @Deprecated('No longer supported')
 library;
 

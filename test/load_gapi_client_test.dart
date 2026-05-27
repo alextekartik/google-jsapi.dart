@@ -30,6 +30,7 @@ void main() {
         await gapiClient.load('people', 'v0');
         success = true;
       } catch (e) {
+        // ignore: avoid_print
         print(e);
       }
       expect(success, false);

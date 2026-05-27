@@ -113,6 +113,7 @@ Future _loadGapi() async {
     },
     onError: (Object e, st) {
       loadGapiResult!.innerHtml = 'load failed $e';
+      // ignore: only_throw_errors
       throw e;
     },
   );
