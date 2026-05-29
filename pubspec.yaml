@@ -3,7 +3,7 @@ version: 0.2.1
 description: js api loader
 publish_to: none
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.0
 dependencies:
   web:
   tekartik_browser_utils:
