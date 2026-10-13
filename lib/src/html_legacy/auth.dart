@@ -50,8 +50,11 @@ class GapiAuth {
           return;
         }
         final oauthToken = authResult['access_token'] as String?;
-        print('authed $oauthToken');
-        completer.complete(oauthToken);
+        if (oauthToken == null) {
+          completer.completeError('null auth token');
+        } else {
+          completer.complete(oauthToken);
+        }
       } else {
         completer.completeError('no auth token');
       }

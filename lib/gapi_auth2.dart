@@ -34,7 +34,7 @@ class GoogleAuthResponse {
 
   GoogleAuthResponse._(this._jsObject);
 
-  String? get token => _jsObject!.callMethod('id_token') as String?;
+  String? get token => _jsObject!['id_token'] as String?;
 }
 
 class GoogleUser {
