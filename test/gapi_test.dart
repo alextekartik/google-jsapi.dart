@@ -3,6 +3,7 @@
 library;
 
 import 'dart:async';
+import 'dart:js_interop_unsafe';
 
 // ignore: deprecated_member_use_from_same_package
 import 'package:tekartik_google_jsapi/google_jsapi.dart';

@@ -7,8 +7,9 @@ description: >-
   Gapi.load, loadGapiClient/GapiClient.load, loadGapiAuth/GapiAuth.authorize,
   loadGapiAuth2/GapiAuth2InitParams/GoogleAuth/GoogleUser/BasicProfile,
   GapiException and the gapi.dart, gapi_client.dart, gapi_auth.dart,
-  gapi_auth2.dart imports. The package is deprecated: read it before touching
-  existing gapi code, do not pick it for a new app.
+  gapi_auth2.dart imports, on dart:js_interop (dart2js and dart2wasm). The
+  sign-in parts (gapi.auth, gapi.auth2) are deprecated by Google: new sign-in
+  code uses Google Identity Services.
 ---
 
 # Loading the Google javascript api (tekartik_google_jsapi)
@@ -18,11 +19,13 @@ the page and wraps the resulting `window.gapi` object in Dart classes: module
 loading, the old `gapi.client`, the old `gapi.auth` token flow and the
 `gapi.auth2` sign-in flow.
 
-**The whole package is deprecated** (every library carries `@Deprecated`, the
-README says so) and the Google APIs it wraps - `gapi.auth` and `gapi.auth2` -
-have been retired by Google in favour of Google Identity Services. Use this
-skill to read or repair an existing browser app; write new sign-in code
-against a current library instead.
+The loaders (`gapi.dart`, `gapi_client.dart`) are maintained, on
+`dart:js_interop` and `package:web` (dart2js and dart2wasm). The sign-in
+APIs they wrap, `gapi.auth` and `gapi.auth2`, are deprecated by Google and
+closed to new client ids: their libraries stay `@Deprecated`, they keep
+working for existing client ids, and new sign-in code uses Google Identity
+Services (`accounts.google.com/gsi/client`,
+`google.accounts.oauth2.initTokenClient` for an access token).
 
 ## Guidelines
 
@@ -33,10 +36,11 @@ against a current library instead.
       git:
         url: https://github.com/alextekartik/google-jsapi.dart
   ```
-* Browser only. Every library imports the legacy `dart:js`, so the code
-  compiles with `dart compile js` / `build_web_compilers` but not to wasm, and
-  tests must be `@TestOn('browser')` (`dart test -p chrome`, or
-  `dart run build_runner test -- -p chrome` for the html-backed ones).
+* Browser only, on `dart:js_interop` and `package:web`: it compiles with
+  dart2js and dart2wasm, never runs on the VM; tests are
+  `@TestOn('browser')` (`dart test -p chrome -c dart2js,dart2wasm`). The raw
+  javascript objects are `JSObject` / `JSAny?` (`dart:js_interop`, with
+  `dart:js_interop_unsafe` for `[]` and `callMethod`).
 * Imports, one per concern:
   * `package:tekartik_google_jsapi/gapi.dart`: `loadGapiPlatform()`,
     `loadGapiClientPlatform()`, `loadGapi()`, `Gapi`, `GapiException`,
@@ -49,35 +53,43 @@ against a current library instead.
     `GapiAuth2`, `GapiAuth2InitParams`, `GapiAuth2SignInParams`,
     `GoogleAuth`, `GoogleUser`, `BasicProfile`, `GoogleAuthResponse`.
   * `package:tekartik_google_jsapi/promise.dart`: `Promise(jsObject).asFuture`
-    to await a raw javascript promise.
-  * `package:tekartik_google_jsapi/google_jsapi.dart` is the old html-era
-    umbrella. It exports *different* `Gapi`, `GapiAuth` and `GapiClient`
-    classes (its `Gapi` has `.auth` / `.client` getters, its `GapiAuth` and
-    `GapiClient` take a `JsObject` in their constructor). Never import it in
-    the same file as `gapi.dart`, and prefer the `gapi.dart` family.
+    to await a javascript thenable (deprecated: `JSPromise.toDart` of
+    `dart:js_interop` for a real promise).
+  * `package:tekartik_google_jsapi/google_jsapi.dart` is the old umbrella
+    (deprecated): it exports the same `Gapi`, `GapiAuth`, `GapiClient` as
+    the libraries above (`Gapi` has `.client` and the deprecated `.auth`
+    getters), prefer the `gapi.dart` family.
 * Loading: `loadGapiPlatform()` injects `//apis.google.com/js/platform.js` and
   resolves once `window.gapi` exists (only `gapi.load` is available then);
   `loadGapiClientPlatform()` injects `//apis.google.com/js/client:platform.js`
   and waits for `gapi.auth` *and* `gapi.client`. `loadGapi()` is an alias of
   `loadGapiClientPlatform()`.
 * Both loaders are idempotent: they return immediately when the script is
-  already there. They poll every 1 ms with no timeout, so a blocked or failing
-  script load hangs the future forever - add `.timeout(...)` if the app must
-  survive that.
-* `Gapi`: `gapi['client']`, `gapi['auth2']` index into the underlying js
-  object (`null` = module not loaded yet), `gapi.jsGapi` / `gapi.jsObject`
-  give the raw `JsObject`, and `await gapi.load('picker')` loads one gapi
-  module by name (it wraps gapi's `callback` option in a `Future`).
+  already there. A script that fails to load throws (the `<script>` error
+  event); once it ran they wait for `window.gapi` (plus `gapi.auth` and
+  `gapi.client` for `loadGapi`) at most `timeout` (30 s by default), then
+  fail with a `TimeoutException`.
+* `Gapi`: `gapi['client']`, `gapi['auth2']` read the underlying js object
+  (a `JSAny?`, `null` = module not loaded yet), `gapi.jsGapi` / `gapi.jsObject`
+  give the raw `JSObject`, and `await gapi.load('picker')` loads one gapi
+  module by name. It gives gapi `callback`, `onerror`, `timeout` and
+  `ontimeout`: it fails with a `GapiException` when gapi reports the module
+  failed (blocked, network) and with a `TimeoutException` after `timeout` (30
+  s by default, `gapi.load('picker', timeout: ...)`).
 * `loadGapiClient([gapi])` loads the `client` module if needed and returns a
   `GapiClient`; `client.load('people', 'v1')` loads one discovery api. Errors
   come back as a completed-with-error `GapiException('<code> - <message>')`
   built by `gapiResponseParseException`. The bare `GapiClient()` constructor
-  reads `window.gapi.client` directly and throws if gapi is not loaded yet;
-  always go through `loadGapiClient()`.
+  reads `window.gapi.client` directly and throws if gapi is not loaded yet
+  (`GapiClient(jsObject)` wraps a given one); go through `loadGapiClient()`.
 * Old token flow: `loadGapiAuth([gapi])` returns a `GapiAuth`;
   `authorize(clientId, scopes, approvalPrompt: GapiAuth.approvalPromptForce)`
   opens the consent popup (`immediate` is always false) and completes with the
-  OAuth access token; `getAccessToken()` re-reads the current token.
+  OAuth access token; `getAccessToken()` re-reads the current token (null
+  when there is none).
+  It completes with a `GapiException` when gapi answers an error, and with a
+  plain `String` error (`no auth token`, `null auth token`) when the result
+  holds no token: catch both.
   `GapiAuth.scopeEmail` is the `'email'` scope. `SCOPE_EMAIL` and
   `APPROVAL_PROMPT_FORCE` are deprecated aliases. Call `authorize` from a
   click handler: browsers block the popup otherwise.
@@ -90,12 +102,15 @@ against a current library instead.
   `name`/`id`/`email`/`imageUrl`, `getAuthResponse()`, `disconnect()`).
   `GapiAuth2SignInParams()..prompt = 'select_account'` forces the account
   chooser (`none`, `login`, `consent`, `select_account`).
+  `onSignedIn` is a broadcast stream with one javascript listener per
+  `GoogleAuth`; `getAuthInstance()` returns a new `GoogleAuth` each call, so
+  keep the one you listen to. `signIn` / `signOut` fail with the rejection
+  reason of gapi (a string such as `popup_closed_by_user`, or the raw js
+  object).
 * `GapiAuth2InitParams.scopes` is a `late` non-nullable field: set both
   `clientId` and `scopes` before `init`, or you get a
-  `LateInitializationError`. `GoogleAuthResponse.token` calls `id_token` as a
-  javascript *method* although gapi exposes it as a property, so it does not
-  work: read the auth response from the js object yourself if you need the id
-  token.
+  `LateInitializationError`. `GoogleAuthResponse.token` is the `id_token`
+  property of the auth response (the id token, not the access token).
 * Never hardcode a client id or secret. The package's own example reads a
   git-ignored `local.config.yaml` at runtime (copied from
   `sample.local.config.yaml`); do the same, and register the JavaScript origin
@@ -163,7 +178,8 @@ void setupAuthorizeButton(String clientId) {
         approvalPrompt: GapiAuth.approvalPromptForce,
       );
       print('token: ${token.substring(0, 4)}...');
-    } on GapiException catch (e) {
+    } catch (e) {
+      // A GapiException, or a String when the result holds no token
       print('authorize failed: $e');
     }
   });
@@ -218,12 +234,13 @@ void main() {
 
 ## Common mistakes
 
-* Importing `google_jsapi.dart` and `gapi.dart` together: two unrelated `Gapi`
-  classes, and the errors are confusing.
-* Calling `loadGapiClient()` / `GapiClient()` before any loader ran, or
-  expecting `gapi['client']` to exist after `loadGapiPlatform()` alone.
+* Calling the bare `GapiClient()` constructor before any loader ran (use
+  `loadGapiClient()`, which loads what is missing), or expecting
+  `gapi['client']` to exist after `loadGapiPlatform()` alone.
 * Awaiting `authorize()` or `signIn()` outside a user gesture: the popup is
   blocked and the future never completes.
 * Calling `getAuthInstance()` before `init()`.
 * Forgetting `scopes` on `GapiAuth2InitParams` (`LateInitializationError`).
-* Compiling to wasm or running these libraries on the Dart VM.
+* Running these libraries on the Dart VM (browser only).
+* Starting a new app on it: `gapi.auth` and `gapi.auth2` are deprecated by
+  Google and closed to new client ids, use Google Identity Services.

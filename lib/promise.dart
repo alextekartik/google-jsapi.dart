@@ -1,28 +1,5 @@
-// ignore_for_file: avoid_print, deprecated_member_use
-@Deprecated('Do not use')
+/// [Promise]: a JS promise or thenable as a Dart future.
+@Deprecated('Use JSPromise.toDart of dart:js_interop')
 library;
 
-import 'dart:async';
-import 'dart:js';
-
-class Promise {
-  final JsObject? _jsObject;
-  Promise(this._jsObject);
-
-  Future get asFuture {
-    final completer = Completer<dynamic>();
-    _jsObject!.callMethod('then', [
-      // onFullfilled
-      (dynamic value) {
-        print('onFullfilled');
-        completer.complete(value);
-      },
-      // onRejected
-      (Object reason) {
-        print('reason');
-        completer.completeError(reason);
-      },
-    ]);
-    return completer.future;
-  }
-}
+export 'src/promise_impl.dart' show Promise;

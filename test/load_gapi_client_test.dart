@@ -1,9 +1,10 @@
-// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package
 
 @TestOn('browser')
 library;
 
-import 'dart:js';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
 import 'package:tekartik_google_jsapi/gapi_client.dart';
 import 'package:test/test.dart';
@@ -11,17 +12,17 @@ import 'package:test/test.dart';
 void main() {
   group('gapi_client', () {
     test('load', () async {
-      expect(context['gapi'], isNull);
+      expect(globalContext['gapi'], isNull);
       final gapiClient = await loadGapiClient();
       expect(gapiClient, isNotNull);
-      expect((context['gapi'] as JsObject)['client'], isNotNull);
+      expect((globalContext['gapi'] as JSObject)['client'], isNotNull);
       expect(
-        ((context['gapi'] as JsObject)['client'] as JsObject)['people'],
+        ((globalContext['gapi'] as JSObject)['client'] as JSObject)['people'],
         isNull,
       );
       await gapiClient.load('people', 'v1');
       expect(
-        ((context['gapi'] as JsObject)['client'] as JsObject)['people'],
+        ((globalContext['gapi'] as JSObject)['client'] as JSObject)['people'],
         isNotNull,
       );
 

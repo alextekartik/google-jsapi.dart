@@ -1,10 +1,11 @@
-// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package
 
 @TestOn('browser')
 library;
 
 import 'dart:async';
-import 'dart:js';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
 import 'package:tekartik_google_jsapi/gapi.dart';
 import 'package:test/test.dart';
@@ -14,9 +15,9 @@ void main() {
     Gapi gapi;
 
     test('load', () async {
-      expect(context['gapi'], isNull);
+      expect(globalContext['gapi'], isNull);
       gapi = await loadGapiPlatform();
-      expect(context['gapi'], isNotNull);
+      expect(globalContext['gapi'], isNotNull);
       expect(gapi['auth'], isNull);
       expect(gapi['load'], isNotNull);
       expect(gapi['auth2'], isNull);
